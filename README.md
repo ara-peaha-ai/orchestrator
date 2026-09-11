@@ -1,6 +1,6 @@
 [![AI generated doc](https://deepwiki.com/badge.svg)](https://deepwiki.com/peaha/pay-orchestrator)
 
-# @paga-peaha-ai/pay #todo @ai #master true #pri 1
+# @paga-peaha-ai/pay ##todo @ai #master true #pri 1
 
 ## Stage
 
@@ -92,7 +92,7 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 
 ### AI
 
-#todo @giovanni
+##todo @giovanni
 
 ## Local development
 
