@@ -6,7 +6,7 @@ const toBoolean = (v) => String(v || '').toLowerCase() === 'true'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/cors',
+    name: '@ara-peaha-ai/cors',
     configKey: 'corsProxy'
   },
 
@@ -53,7 +53,7 @@ export default defineNuxtModule({
       // Key: allow GET+ALL same route (different keys)
       const key = `${method} ${route}`
       if (seen.has(key)) {
-        throw new Error(`[@paga-peaha-ai/cors] Duplicate endpoint: ${key}`)
+        throw new Error(`[@ara-peaha-ai/cors] Duplicate endpoint: ${key}`)
       }
       seen.add(key)
 

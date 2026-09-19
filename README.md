@@ -1,6 +1,6 @@
 [![AI generated doc](https://deepwiki.com/badge.svg)](https://deepwiki.com/peaha/pay-orchestrator)
 
-# @paga-peaha-ai/pay ##todo @ai #master true #pri 1
+# @ara-peaha-ai/pay ##todo @ai #master true #pri 1
 
 ## Stage
 
@@ -68,9 +68,9 @@ Payment rail modules. Each injects pages, composables, and server handlers into 
 
 | Package | Page | API |
 |---------|------|-----|
-| `@paga-peaha-ai/template` (`rails/template`) | `/rails/template` | `/api/rails/template` |
-| `@paga-peaha-ai/peach` (`rails/peach`) | `/rails/peach` | `/api/rails/peach/*` |
-| `@paga-peaha-ai/robosats` (`rails/robosats`) | `/rails/robosats` | `/api/rails/robosats/*` |
+| `@ara-peaha-ai/template` (`rails/template`) | `/rails/template` | `/api/rails/template` |
+| `@ara-peaha-ai/peach` (`rails/peach`) | `/rails/peach` | `/api/rails/peach/*` |
+| `@ara-peaha-ai/robosats` (`rails/robosats`) | `/rails/robosats` | `/api/rails/robosats/*` |
 
 #### Flows
 
@@ -78,7 +78,7 @@ Higher-level feature modules with pages and UI components.
 
 | Package | Pages |
 |---------|-------|
-| `@paga-peaha-ai/booking` (`flows/booking`) | `/flows/booking`, `/flows/booking/embed` |
+| `@ara-peaha-ai/booking` (`flows/booking`) | `/flows/booking`, `/flows/booking/embed` |
 
 #### Services
 
@@ -86,9 +86,9 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 
 | Package | Routes | Notes |
 |---------|--------|-------|
-| `@paga-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency), disabled by default |
-| `@paga-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
-| `@paga-peaha-ai/market` (`services/market`) | `/api/market/**` | KYC-free offer aggregator (Bisq, RoboSats, Peach), disabled by default |
+| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency), disabled by default |
+| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
+| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | KYC-free offer aggregator (Bisq, RoboSats, Peach), disabled by default |
 
 ### AI
 
@@ -107,8 +107,8 @@ pnpm preview
 
 The root Nuxt app (`nuxt.config.js`) lists workspace modules in the `modules` array. Each module auto-registers its pages, composables, and server handlers when the app starts. Adding a module requires two changes:
 
-1. Add `"@paga-peaha-ai/<name>": "workspace:*"` to root `package.json` dependencies
-2. Add `'@paga-peaha-ai/<name>'` to the `modules` array in `nuxt.config.js`
+1. Add `"@ara-peaha-ai/<name>": "workspace:*"` to root `package.json` dependencies
+2. Add `'@ara-peaha-ai/<name>'` to the `modules` array in `nuxt.config.js`
 
 `flows/booking` requires `@nuxt/ui`. It must be present in `nuxt.config.js` before or alongside the booking module.
 
@@ -126,7 +126,7 @@ The root Nuxt app (`nuxt.config.js`) lists workspace modules in the `modules` ar
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `NUXT_ROBOSATS_COORDINATOR_URL` | no | RoboSats default onion | Coordinator onion base URL |
-| `NUXT_TOR_PROXY_SECRET` | yes | — | Shared secret for the embedded `@paga-peaha-ai/tor` proxy |
+| `NUXT_TOR_PROXY_SECRET` | yes | — | Shared secret for the embedded `@ara-peaha-ai/tor` proxy |
 | `NUXT_TOR_SOCKS_URL` | no | `socks5h://127.0.0.1:9050` | SOCKS5h URL of the local Tor daemon |
 
 ### `rails/peach`

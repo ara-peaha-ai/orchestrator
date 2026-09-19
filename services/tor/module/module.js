@@ -6,7 +6,7 @@ const toBoolean = (v) => String(v || '').toLowerCase() === 'true'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/tor',
+    name: '@ara-peaha-ai/tor',
     configKey: 'tor'
   },
 
@@ -24,6 +24,8 @@ export default defineNuxtModule({
     if (options.torProxySecret !== undefined) {
       nuxt.options.runtimeConfig.torProxySecret = options.torProxySecret
     }
+    // register the key so NUXT_TOR_PROXY_SECRET can override it at runtime; empty = proxy denies everything
+    nuxt.options.runtimeConfig.torProxySecret ??= ''
     if (options.torSocksUrl !== undefined) {
       nuxt.options.runtimeConfig.torSocksUrl = options.torSocksUrl
     }

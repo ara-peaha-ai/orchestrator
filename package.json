@@ -1,5 +1,5 @@
 {
-  "name": "@paga-peaha-ai/orchestrator",
+  "name": "@ara-peaha-ai/orchestrator",
   "description": "Orchestrator payment repo. It assembles payment rails, business flows, and support services into a single Nuxt-based workspace.",
   "type": "module",
   "private": true,
@@ -16,12 +16,12 @@
     "nuxt": "^4.0.0",
     "@nuxt/ui": "^3.0.0",
     "tailwindcss": "^4.0.0",
-    "@paga-peaha-ai/ip": "workspace:*",
-    "@paga-peaha-ai/template": "workspace:*",
-    "@paga-peaha-ai/peach": "workspace:*",
-    "@paga-peaha-ai/booking": "workspace:*",
-    "@paga-peaha-ai/robosats": "workspace:*",
-    "@paga-peaha-ai/tor": "workspace:*",
-    "@paga-peaha-ai/masspay": "workspace:*"
+    "@ara-peaha-ai/ip": "workspace:*",
+    "@ara-peaha-ai/template": "workspace:*",
+    "@ara-peaha-ai/peach": "workspace:*",
+    "@ara-peaha-ai/booking": "workspace:*",
+    "@ara-peaha-ai/robosats": "workspace:*",
+    "@ara-peaha-ai/tor": "workspace:*",
+    "@ara-peaha-ai/masspay": "workspace:*"
   }
 }

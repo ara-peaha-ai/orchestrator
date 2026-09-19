@@ -8,13 +8,13 @@ Flows are richer than rails: they can ship pages, embeddable components, composa
 
 | Package | Page(s) | Description |
 |---------|---------|-------------|
-| `@paga-peaha-ai/booking` | `/flows/booking`, `/flows/booking/embed` | Booking/scheduling UI — calendar, time slots, optional extras, embeddable iframe variant with custom theming |
+| `@ara-peaha-ai/booking` | `/flows/booking`, `/flows/booking/embed` | Booking/scheduling UI — calendar, time slots, optional extras, embeddable iframe variant with custom theming |
 
 ## Adding a new flow
 
 1. Create `flows/<name>/` with `package.json`, `module.js`, and `runtime/`
-2. Name the package `@paga-peaha-ai/<name>` — no `-flow` suffix
+2. Name the package `@ara-peaha-ai/<name>` — no `-flow` suffix
 3. Use `addImportsDir` for composables, `addComponentsDir` for components, `addServerHandler` for API handlers, `pages:extend` for pages
-4. Add `"@paga-peaha-ai/<name>": "workspace:*"` to the app's `package.json`
-5. Add `'@paga-peaha-ai/<name>'` to the app's `nuxt.config.js` modules array
+4. Add `"@ara-peaha-ai/<name>": "workspace:*"` to the app's `package.json`
+5. Add `'@ara-peaha-ai/<name>'` to the app's `nuxt.config.js` modules array
 6. Run `pnpm install`

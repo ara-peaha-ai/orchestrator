@@ -5,7 +5,7 @@ import { middlewareDefs } from './definitions/middlewares.js'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/booking',
+    name: '@ara-peaha-ai/booking',
     configKey: 'paguaituBookingFlow'
   },
   defaults: {
@@ -60,7 +60,7 @@ export default defineNuxtModule({
       const route = rel ? `${base}/${rel}` : base
       const key = `${method} ${route}`
 
-      if (seen.has(key)) throw new Error(`[@paga-peaha-ai/booking] Duplicate endpoint: ${key}`)
+      if (seen.has(key)) throw new Error(`[@ara-peaha-ai/booking] Duplicate endpoint: ${key}`)
       seen.add(key)
 
       addServerHandler({
