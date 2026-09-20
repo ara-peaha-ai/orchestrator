@@ -21,6 +21,7 @@
     "@ara-peaha-ai/peach": "workspace:*",
     "@ara-peaha-ai/booking": "workspace:*",
     "@ara-peaha-ai/robosats": "workspace:*",
+    "@ara-peaha-ai/btcpay": "workspace:*",
     "@ara-peaha-ai/tor": "workspace:*",
     "@ara-peaha-ai/masspay": "workspace:*"
   }

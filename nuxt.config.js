@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@ara-peaha-ai/peach',
     '@ara-peaha-ai/booking',
     '@ara-peaha-ai/robosats',
+    '@ara-peaha-ai/btcpay',
     '@ara-peaha-ai/masspay'
   ],
 

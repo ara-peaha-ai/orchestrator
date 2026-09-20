@@ -71,3 +71,11 @@ No params — follows system dark/light preference and Nuxt UI default colors:
 ```
 /flows/booking/embed
 ```
+
+## Payment (BTCPay)
+
+- `POST /flows/booking/checkout` validates the body, computes the price server-side from `runtime/lib/pricing.js` (the client never sends an amount), creates a BTCPay invoice and returns `{ orderId, invoiceId, checkoutLink }`. Optional `currency` (`EUR` default, `USD`).
+- `GET /flows/booking/order?orderId=` returns the order status (`pending` | `paid`); `/flows/booking/thanks` polls it.
+- `runtime/plugins/btcpay-settled.js` listens to the `btcpay:invoice-settled` Nitro hook, marks the order paid and calls the `openPurchaseRequest` stub (where the RoboSats/Peach offer will be opened).
+- `createInvoice` is imported by relative path (`../../../../rails/btcpay/runtime/lib/createInvoice.js`) because the rail package only exports `.`.
+- Order state is an in-memory Map: lost on restart, replace with storage.

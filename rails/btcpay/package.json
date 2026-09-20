@@ -1,0 +1,28 @@
+{
+  "name": "@ara-peaha-ai/btcpay",
+  "version": "0.1.0",
+  "author": "p2pagos & learntheropes",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "files": [
+    "runtime",
+    "module",
+    "nitro.config.*"
+  ],
+  "main": "./module/module.js",
+  "exports": {
+    ".": {
+      "import": "./module/module.js"
+    }
+  },
+  "scripts": {
+    "dev": "nitro dev",
+    "build": "nitro build",
+    "start": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.13.0",
+    "nitropack": "latest"
+  }
+}
