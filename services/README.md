@@ -14,6 +14,7 @@ Each service ships in **dual mode**:
 | `@paga-peaha-ai/tor` (`services/tor`) | `GET /api/tor`, `ALL /api/tor/**` | Generic Tor reverse proxy — forwards requests to any `.onion` address via SOCKS5h. Target set per-request via `X-Tor-Target` header |
 | `@paga-peaha-ai/cors` (`services/cors`) | `GET /api/cors`, `ALL /api/cors/**` | CORS reverse proxy — proxies a configured target API with secret-based auth |
 | `@paga-peaha-ai/market` (`services/market`) | `GET /api/market/**` | KYC-free Bitcoin price aggregator — buy/sell offers from Bisq, RoboSats, Peach |
+| `@paga-peaha-ai/dont-trust-verify` (`services/dont-trust-verify`) | `GET /api/dont-trust-verify`, `POST /challenge`, `POST /register`, `POST /match` | Local-first 18+ and face-match verification — ID stays in the browser, server keeps only a face vector computed from a face crop |
 
 ## Standalone: running locally
 
