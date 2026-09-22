@@ -7,14 +7,16 @@ Each service ships in **dual mode**:
 - **Standalone** — a self-contained Nitro app deployable to Docker or Cloudflare Workers, configured via `.env`
 - **Module** — a Nuxt module (`services/<name>/module/`) embeddable into any app in the workspace, registering the same handlers under the host app's Nitro server
 
+> `dont-trust-verify` is Node-only (server-side tfjs WASM face check): Docker/VPS, not Cloudflare Workers.
+
 ## Available services
 
 | Package | Routes | Description |
 |---------|--------|-------------|
-| `@paga-peaha-ai/tor` (`services/tor`) | `GET /api/tor`, `ALL /api/tor/**` | Generic Tor reverse proxy — forwards requests to any `.onion` address via SOCKS5h. Target set per-request via `X-Tor-Target` header |
-| `@paga-peaha-ai/cors` (`services/cors`) | `GET /api/cors`, `ALL /api/cors/**` | CORS reverse proxy — proxies a configured target API with secret-based auth |
-| `@paga-peaha-ai/market` (`services/market`) | `GET /api/market/**` | KYC-free Bitcoin price aggregator — buy/sell offers from Bisq, RoboSats, Peach |
-| `@paga-peaha-ai/dont-trust-verify` (`services/dont-trust-verify`) | `GET /api/dont-trust-verify`, `POST /challenge`, `POST /register`, `POST /match` | Local-first 18+ and face-match verification — ID stays in the browser, server keeps only a face vector computed from a face crop |
+| `@ara-peaha-ai/tor` (`services/tor`) | `GET /api/tor`, `ALL /api/tor/**` | Generic Tor reverse proxy — forwards requests to any `.onion` address via SOCKS5h. Target set per-request via `X-Tor-Target` header |
+| `@ara-peaha-ai/cors` (`services/cors`) | `GET /api/cors`, `ALL /api/cors/**` | CORS reverse proxy — proxies a configured target API with secret-based auth |
+| `@ara-peaha-ai/market` (`services/market`) | `GET /api/market/**` | KYC-free Bitcoin price aggregator — buy/sell offers from Bisq, RoboSats, Peach |
+| `@ara-peaha-ai/dont-trust-verify` (`services/dont-trust-verify`) | `GET /api/dont-trust-verify`, `POST /api/dont-trust-verify/challenge`, `POST /api/dont-trust-verify/register`, `POST /api/dont-trust-verify/match` | Local-first 18+ and face-match verification — ID stays in the browser, server keeps only a face vector computed from a face crop |
 
 ## Standalone: running locally
 
@@ -31,7 +33,7 @@ Add the service as a workspace dependency and enable it in `nuxt.config.js`:
 ```js
 // nuxt.config.js
 export default defineNuxtConfig({
-  modules: ['@paga-peaha-ai/tor'],
+  modules: ['@ara-peaha-ai/tor'],
   tor: {
     enabled: true,
     torProxySecret: process.env.NUXT_TOR_PROXY_SECRET

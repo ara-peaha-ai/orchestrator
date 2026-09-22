@@ -1,4 +1,7 @@
 <script setup>
+import { today, getLocalTimeZone } from '@internationalized/date'
+import { computeTotal } from '../lib/pricing.js'
+
 const props = defineProps({
   customMode: String,
   customPrimary: String,
@@ -12,6 +15,7 @@ const form = reactive({
   timeSlot: '09:00-10:00'
 })
 
+const selectedDate = ref(today(getLocalTimeZone()))
 const selectedExtras = ref([])
 const extras = [
   { label: 'Priority confirmation (+10%)', value: 'priority' },
@@ -32,16 +36,25 @@ const { isDark, themeStyles } = useCustomTheme({
   background: () => props.customBackground
 })
 
-const subtotal = computed(() => {
-  const base = 120
-  const extraMap = {
-    priority: 12,
-    summary: 6,
-    recording: 18
-  }
+const subtotal = computed(() => computeTotal(selectedExtras.value))
 
-  return selectedExtras.value.reduce((sum, item) => sum + (extraMap[item] || 0), base)
-})
+const paying = ref(false)
+const payError = ref('')
+
+const payWithBitcoin = async () => {
+  paying.value = true
+  payError.value = ''
+  try {
+    const { checkoutLink } = await $fetch('/flows/booking/checkout', {
+      method: 'POST',
+      body: { ...form, bookingDate: selectedDate.value?.toString(), extras: selectedExtras.value }
+    })
+    await navigateTo(checkoutLink, { external: true })
+  } catch (e) {
+    payError.value = e?.data?.statusMessage || e?.statusMessage || 'Could not start payment'
+    paying.value = false
+  }
+}
 </script>
 
 <template>
@@ -85,7 +98,7 @@ const subtotal = computed(() => {
           <template #header>
             <h2 class="text-lg font-semibold">Select Date</h2>
           </template>
-          <BookingCalendar :custom-mode="props.customMode" :custom-primary="props.customPrimary" />
+          <BookingCalendar v-model="selectedDate" :custom-mode="props.customMode" :custom-primary="props.customPrimary" />
         </UCard>
 
         <UCard>
@@ -102,9 +115,10 @@ const subtotal = computed(() => {
             </UFormField>
             <div class="rounded-md border border-default p-3">
               <p class="text-sm text-muted">Estimated total</p>
-              <p class="text-2xl font-bold">${{ subtotal }}</p>
+              <p class="text-2xl font-bold">{{ subtotal }} EUR</p>
             </div>
-            <UButton color="primary" block>Continue to Payment</UButton>
+            <UAlert v-if="payError" color="error" variant="subtle" :title="payError" />
+            <UButton color="primary" block :loading="paying" :disabled="paying" @click="payWithBitcoin">Pay with Bitcoin</UButton>
           </div>
         </UCard>
       </div>

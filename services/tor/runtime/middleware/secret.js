@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
   const { torProxySecret } = useRuntimeConfig()
   const incomingSecretHeader = getRequestHeader(event, 'x-tor-proxy-secret')
 
-  if (incomingSecretHeader !== torProxySecret) {
+  if (!torProxySecret || incomingSecretHeader !== torProxySecret) {
     setResponseStatus(event, 403)
     return { error: 'Forbidden' }
   }

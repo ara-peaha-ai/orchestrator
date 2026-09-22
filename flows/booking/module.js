@@ -1,11 +1,11 @@
-import { defineNuxtModule, createResolver, addComponentsDir, addImportsDir, addServerHandler, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addComponentsDir, addImportsDir, addServerHandler, addServerPlugin, addTemplate } from '@nuxt/kit'
 import { pageDefs } from './definitions/pages.js'
 import { endpointDefs } from './definitions/endpoints.js'
 import { middlewareDefs } from './definitions/middlewares.js'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/booking',
+    name: '@ara-peaha-ai/booking',
     configKey: 'paguaituBookingFlow'
   },
   defaults: {
@@ -42,6 +42,8 @@ export default defineNuxtModule({
       }
     })
 
+    addServerPlugin(resolver.resolve('./runtime/plugins/btcpay-settled.js'))
+
     for (const mw of middlewareDefs) {
       addServerHandler({
         middleware: true,
@@ -60,7 +62,7 @@ export default defineNuxtModule({
       const route = rel ? `${base}/${rel}` : base
       const key = `${method} ${route}`
 
-      if (seen.has(key)) throw new Error(`[@paga-peaha-ai/booking] Duplicate endpoint: ${key}`)
+      if (seen.has(key)) throw new Error(`[@ara-peaha-ai/booking] Duplicate endpoint: ${key}`)
       seen.add(key)
 
       addServerHandler({

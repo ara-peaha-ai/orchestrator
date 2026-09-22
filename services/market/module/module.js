@@ -6,7 +6,7 @@ const toBoolean = (v) => String(v || '').toLowerCase() === 'true'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/market',
+    name: '@ara-peaha-ai/market',
     configKey: 'market'
   },
 

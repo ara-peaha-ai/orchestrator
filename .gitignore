@@ -1,6 +1,7 @@
 node_modules
 .output
 .nuxt
+.nitro
 .dist
 .DS_Store
 .env

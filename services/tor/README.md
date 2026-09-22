@@ -1,4 +1,4 @@
-# @paga-peaha-ai/tor
+# @ara-peaha-ai/tor
 
 Generic Tor reverse proxy. Forwards HTTP requests to any `.onion` address via a local Tor daemon (SOCKS5h). Ships in dual mode: standalone Nitro app or Nuxt module.
 
@@ -36,7 +36,7 @@ pnpm start
 ```js
 // nuxt.config.js
 export default defineNuxtConfig({
-  modules: ['@paga-peaha-ai/tor'],
+  modules: ['@ara-peaha-ai/tor'],
   tor: {
     enabled: true,
     torProxySecret: process.env.NUXT_TOR_PROXY_SECRET
@@ -44,7 +44,7 @@ export default defineNuxtConfig({
 })
 ```
 
-Add `"@paga-peaha-ai/tor": "workspace:*"` to the app's `package.json` dependencies.
+Add `"@ara-peaha-ai/tor": "workspace:*"` to the app's `package.json` dependencies.
 
 ## Request format
 

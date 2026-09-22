@@ -1,12 +1,13 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
-    '@paga-peaha-ai/ip',
-    '@paga-peaha-ai/template',
-    '@paga-peaha-ai/peach',
-    '@paga-peaha-ai/booking',
-    '@paga-peaha-ai/robosats',
-    '@paga-peaha-ai/masspay'
+    '@ara-peaha-ai/ip',
+    '@ara-peaha-ai/template',
+    '@ara-peaha-ai/peach',
+    '@ara-peaha-ai/booking',
+    '@ara-peaha-ai/robosats',
+    '@ara-peaha-ai/btcpay',
+    '@ara-peaha-ai/masspay'
   ],
 
   ipDetection: {

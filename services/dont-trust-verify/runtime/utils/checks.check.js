@@ -19,5 +19,6 @@ assert.ok([...code].every(c => CODE_ALPHABET.includes(c)))
 assert.ok(codeInText(`foo ${code} bar`, code))
 assert.ok(codeInText(`x ${code.slice(0, 5)}Q y`, code)) // one OCR error tolerated
 assert.ok(!codeInText(`x ${code.slice(0, 4)}QQ y`, code)) // two errors rejected
+assert.ok(!codeInText('  ', '')) // empty code never matches an empty token
 assert.equal(euclideanDistance([0, 0], [3, 4]), 5)
 console.log('checks ok')

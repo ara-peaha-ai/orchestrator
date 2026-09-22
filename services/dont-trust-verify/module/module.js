@@ -7,7 +7,7 @@ const toBoolean = (v) => String(v || '').toLowerCase() === 'true'
 
 export default defineNuxtModule({
   meta: {
-    name: '@paga-peaha-ai/dont-trust-verify',
+    name: '@ara-peaha-ai/dont-trust-verify',
     configKey: 'dontTrustVerify'
   },
 

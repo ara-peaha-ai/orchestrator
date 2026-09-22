@@ -1,12 +1,13 @@
 <script setup>
-import { CalendarDate } from '@internationalized/date'
+import { today, getLocalTimeZone } from '@internationalized/date'
 
 const props = defineProps({
   customMode: String,
   customPrimary: String
 })
 
-const selectedDate = shallowRef(new CalendarDate(2026, 3, 22))
+const todayDate = today(getLocalTimeZone())
+const selectedDate = defineModel({ default: () => todayDate })
 
 const { isDark, themeStyles } = useCustomTheme({
   mode: () => props.customMode,
@@ -16,6 +17,6 @@ const { isDark, themeStyles } = useCustomTheme({
 
 <template>
   <div class="rounded-lg p-2" :class="isDark === null ? '' : isDark ? 'dark' : 'light'" :style="themeStyles">
-    <UCalendar v-model="selectedDate" color="primary" class="w-full" />
+    <UCalendar v-model="selectedDate" :min-value="todayDate" color="primary" class="w-full" />
   </div>
 </template>
