@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
   if (preset) {
     if (!Object.hasOwn(apiKeyPermissions, preset)) throw badRequest('Unknown preset')
     if (storeId && !/^[A-Za-z0-9_-]{1,128}$/.test(storeId)) throw badRequest('Invalid storeId')
+    if (storeId && preset === 'unrestricted') throw badRequest('unrestricted cannot be scoped to a storeId')
     list = storeId ? restrictToStore(storeId, apiKeyPermissions[preset]) : apiKeyPermissions[preset]
   }
   if (!Array.isArray(list) || !list.length || !list.every(p => typeof p === 'string')) throw badRequest('permissions or preset required')

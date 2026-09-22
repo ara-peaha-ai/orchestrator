@@ -6,11 +6,13 @@ const status = ref('pending')
 const error = ref('')
 let timer
 
+const TERMINAL_STATUSES = ['paid', 'expired', 'invalid']
+
 const poll = async () => {
   try {
     const order = await $fetch('/flows/booking/order', { query: { orderId: orderId.value } })
     status.value = order.status
-    if (order.status === 'paid') clearInterval(timer)
+    if (TERMINAL_STATUSES.includes(order.status)) clearInterval(timer)
   } catch (e) {
     error.value = e?.statusMessage || 'Could not load order'
     clearInterval(timer)
@@ -32,6 +34,8 @@ onBeforeUnmount(() => clearInterval(timer))
       </template>
       <UAlert v-if="error" color="error" variant="subtle" :title="error" />
       <UAlert v-else-if="status === 'paid'" color="success" variant="subtle" title="Payment received. Your booking is confirmed." />
+      <UAlert v-else-if="status === 'expired'" color="error" variant="subtle" title="This invoice expired before payment was received." />
+      <UAlert v-else-if="status === 'invalid'" color="error" variant="subtle" title="This payment could not be validated." />
       <UAlert v-else color="primary" variant="subtle" title="Waiting for payment confirmation..." />
     </UCard>
   </div>

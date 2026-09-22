@@ -31,4 +31,7 @@ export const apiKeyPermissions = {
   ]
 }
 
-export const restrictToStore = (storeId, permissions) => permissions.map(p => `${p}:${storeId}`)
+// Only btcpay.store.* permissions accept the :storeId suffix; user-level
+// permissions (e.g. btcpay.user.canviewprofile) and 'unrestricted' don't.
+export const restrictToStore = (storeId, permissions) =>
+  permissions.map(p => p.startsWith('btcpay.store.') ? `${p}:${storeId}` : p)

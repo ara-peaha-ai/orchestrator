@@ -38,7 +38,9 @@ export default defineEventHandler(async (event) => {
   if (!bookingName || bookingName.length > 100) throw bad('Invalid bookingName')
   if (!EMAIL_RE.test(bookingEmail) || bookingEmail.length > 254) throw bad('Invalid bookingEmail')
   if (bookingDetails.length > 2000) throw bad('Invalid bookingDetails')
-  if (!DATE_RE.test(bookingDate)) throw bad('Invalid bookingDate')
+  // ponytail: UTC day compare, so a client just past local midnight can be rejected
+  // up to ~1 day early near the UTC boundary — fine for a date picker, not a hard cutoff.
+  if (!DATE_RE.test(bookingDate) || bookingDate < new Date().toISOString().slice(0, 10)) throw bad('Invalid bookingDate')
   if (!/^\d{2}:\d{2}-\d{2}:\d{2}$/.test(timeSlot)) throw bad('Invalid timeSlot')
   if (!ALLOWED_CURRENCIES.includes(currency)) throw bad('Unsupported currency')
   if (body.extras !== undefined && !Array.isArray(body.extras)) throw bad('Invalid extras')
@@ -56,7 +58,7 @@ export default defineEventHandler(async (event) => {
     orderId,
     buyerEmail: bookingEmail,
     redirectUrl: `${getRequestURL(event).origin}/flows/booking/thanks?orderId=${orderId}`,
-    metadata: { bookingName, bookingDetails, bookingDate, timeSlot, extras }
+    metadata: { flow: 'booking', bookingName, bookingDetails, bookingDate, timeSlot, extras }
   })
 
   return { orderId, invoiceId: invoice.id, checkoutLink: invoice.checkoutLink }

@@ -35,13 +35,13 @@ export default defineEventHandler(async (event) => {
       showRecommendedFee: true,
       recommendedFeeBlockTarget: 1,
       defaultLang: `${body.locale.toLowerCase()}-${body.locale.toUpperCase()}`,
-      customLogo: body.logoUrl || '',
-      customCSS: body.cssUrl || '',
+      logoUrl: body.logoUrl || '',
+      cssUrl: body.cssUrl || cssUrl,
       htmlTitle: '',
       networkFeeMode: 'MultiplePaymentsOnly',
       payJoinEnabled: false,
       lazyPaymentMethods: false,
-      defaultPaymentMethod: 'BTC',
+      defaultPaymentMethod: 'BTC-CHAIN',
       paymentMethodCriteria: []
     }
   })

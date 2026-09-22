@@ -1,5 +1,5 @@
 <script setup>
-import { CalendarDate } from '@internationalized/date'
+import { today, getLocalTimeZone } from '@internationalized/date'
 import { computeTotal } from '../lib/pricing.js'
 
 const props = defineProps({
@@ -15,7 +15,7 @@ const form = reactive({
   timeSlot: '09:00-10:00'
 })
 
-const selectedDate = ref(new CalendarDate(2026, 3, 22))
+const selectedDate = ref(today(getLocalTimeZone()))
 const selectedExtras = ref([])
 const extras = [
   { label: 'Priority confirmation (+10%)', value: 'priority' },

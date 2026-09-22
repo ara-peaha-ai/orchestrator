@@ -6,10 +6,20 @@ export const btcpayRequest = async ({ apiKey, method = 'GET', path, body, query 
     throw createError({ statusCode: 500, statusMessage: 'BTCPay not configured' })
   }
 
+  let parsedUrl
+  try {
+    parsedUrl = new URL(String(btcpayUrl))
+  } catch {
+    throw createError({ statusCode: 500, statusMessage: 'Invalid BTCPay URL' })
+  }
+  if (parsedUrl.protocol !== 'https:') {
+    throw createError({ statusCode: 500, statusMessage: 'BTCPay URL must use HTTPS' })
+  }
+
   const cleanPath = String(path).replace(/^\/+/, '')
 
   try {
-    return await $fetch(`${String(btcpayUrl).replace(/\/+$/, '')}/api/v1/${cleanPath}`, {
+    return await $fetch(`${parsedUrl.toString().replace(/\/+$/, '')}/api/v1/${cleanPath}`, {
       method,
       headers: { Authorization: `token ${key}` },
       query,
