@@ -19,15 +19,21 @@ const load = () => loading ??= (async () => {
   await faceapi.nets.faceLandmark68Net.loadFromDisk(dir)
   await faceapi.nets.faceRecognitionNet.loadFromDisk(dir)
   return faceapi
-})()
+})().catch((err) => {
+  loading = undefined // retry on the next call instead of caching the failure
+  throw err
+})
 
 // face: { width, height, rgb } with rgb as base64 of width*height*3 bytes. Used and dropped, never stored.
 export const descriptorFromFace = async (face) => {
   const { width, height, rgb } = face || {}
-  const bytes = typeof rgb === 'string' ? Buffer.from(rgb, 'base64') : null
   const sizeOk = Number.isInteger(width) && Number.isInteger(height) && width > 0 && height > 0 &&
     width <= MAX_SIDE && height <= MAX_SIDE
-  if (!sizeOk || !bytes || bytes.length !== width * height * 3) {
+  // base64 length is checked before decoding, so an oversized body is never allocated
+  const bytes = sizeOk && typeof rgb === 'string' && rgb.length === Math.ceil(width * height * 3 / 3) * 4
+    ? Buffer.from(rgb, 'base64')
+    : null
+  if (!bytes || bytes.length !== width * height * 3) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid face image' })
   }
 

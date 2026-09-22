@@ -60,4 +60,5 @@ const editDistance = (a, b) => {
 
 // OCR of a hand-held sheet is noisy: accept a token within one edit of the code
 export const codeInText = (text, code) =>
+  typeof code === 'string' && code.length === CODE_LENGTH &&
   text.toUpperCase().split(/[^A-Z0-9]+/).some(t => editDistance(t, code) <= 1)

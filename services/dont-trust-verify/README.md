@@ -40,7 +40,7 @@ const { init, requestCode, verify, checkTrainingImage, ready, code, ocrText, age
 await init()                                   // then ready.value === true
 await requestCode()                            // show `code` to the user
 const res = await verify(photoCanvas)          // { ok } or { ok: false, reason }
-const check = await checkTrainingImage(img)    // { match, distance }
+const check = await checkTrainingImage(img)    // { match, distances }
 ```
 
 `reason`: `code`, `faces`, `id-mismatch`, `dob-not-found`, `age`, `face-mismatch`.
@@ -82,6 +82,7 @@ In a built standalone server the env prefix is `NUXT_` (set in `nitro.config.js`
 - **Still open (client-side by design):** a scripted attacker can request a code and POST it back with any face crop and `ageVerified: true`. The ID never reaches the server, so the server can check neither the age nor that the face belongs to the ID. This is the accepted residual risk.
 - **No real liveness:** the sheet with the code proves freshness, not a live person. A video or a good print of someone else's face plus ID plus sheet is not detected.
 - **OCR on the DOB is a heuristic** (oldest past date on the document); MRZ or PDF417 parsing is more reliable where present. A hand-written code is the weakest OCR input: block capitals, dark pen.
+- **No rate limit here:** each `/match` runs up to 5 CPU inferences. `/register` and `/match` each serialize to one in-flight request per user (409 otherwise), but that's concurrency control, not a rate limit — the host must still rate-limit these routes (e.g. `services/ip`) against a single user hammering them sequentially. Both locks are per process: multi-instance deploys need a storage driver with atomic delete instead.
 - **Face descriptors are biometric data.** Not reversible to a photo, but not anonymous either. Store per user, allow deletion.
 - **Matching quality:** face-api (128-d) is weak on ID portrait vs selfie. Tune `matchThreshold` with real data.
 - **Weights license:** code is MIT/Apache-2.0, the pre-trained weights come from academic datasets. Review before scaling.
