@@ -1,4 +1,4 @@
-# @paga-peaha-ai/booking
+# @ara-peaha-ai/booking
 
 Nuxt 4 module for the booking/scheduling flow. Ships a full-page booking UI and an embeddable iframe variant with custom theming support.
 
@@ -27,14 +27,14 @@ Nuxt 4 module for the booking/scheduling flow. Ships a full-page booking UI and 
 ```json
 // package.json
 "dependencies": {
-  "@paga-peaha-ai/booking": "workspace:*"
+  "@ara-peaha-ai/booking": "workspace:*"
 }
 ```
 
 ```js
 // nuxt.config.js
 export default defineNuxtConfig({
-  modules: ['@paga-peaha-ai/booking']
+  modules: ['@ara-peaha-ai/booking']
 })
 ```
 

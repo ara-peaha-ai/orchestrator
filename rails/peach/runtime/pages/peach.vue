@@ -1,6 +1,6 @@
 <template>
   <main style="padding: 24px; font-family: ui-sans-serif, system-ui;">
-    <h1>@paga-peaha-ai/peach rail</h1>
+    <h1>@ara-peaha-ai/peach rail</h1>
     <p v-if="pending">Loading merchant account…</p>
     <p v-else-if="error">Error: {{ error.message }}</p>
     <template v-else>

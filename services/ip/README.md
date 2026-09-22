@@ -265,7 +265,7 @@ npm run build
 
 ```json
 {
-  "name": "@paga-peaha-ai/ip",
+  "name": "@ara-peaha-ai/ip",
   "version": "0.1.0",
   "license": "MIT",
   "private": true

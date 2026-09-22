@@ -1,5 +1,5 @@
 {
-  "name": "@paga-peaha-ai/robosats",
+  "name": "@ara-peaha-ai/robosats",
   "version": "0.1.0",
   "author": "p2pagos & learntheropes",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "@noble/hashes": "^1.4.0",
     "@noble/secp256k1": "^2.1.0",
     "@nuxt/kit": "^3.13.0",
-    "@paga-peaha-ai/tor": "workspace:*",
+    "@ara-peaha-ai/tor": "workspace:*",
     "base-ex": "^0.8.1",
     "js-sha256": "^0.11.0",
     "nitropack": "latest",

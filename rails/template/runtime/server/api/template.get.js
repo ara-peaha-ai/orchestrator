@@ -1,5 +1,5 @@
 export default defineEventHandler(() => {
   return {
-    message: 'hello from @paga-peaha-ai/template (rail api)'
+    message: 'hello from @ara-peaha-ai/template (rail api)'
   }
 })

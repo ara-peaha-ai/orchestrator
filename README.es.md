@@ -26,9 +26,9 @@ Módulos de rieles de pago. Cada uno inyecta páginas, composables y handlers de
 
 | Package | Page | API |
 |---------|------|-----|
-| `@paga-peaha-ai/template` (`rails/template`) | `/rails/template` | `/api/rails/template` |
-| `@paga-peaha-ai/peach` (`rails/peach`) | `/rails/peach` | `/api/rails/peach/*` |
-| `@paga-peaha-ai/robosats` (`rails/robosats`) | `/rails/robosats` | `/api/rails/robosats/*` |
+| `@ara-peaha-ai/template` (`rails/template`) | `/rails/template` | `/api/rails/template` |
+| `@ara-peaha-ai/peach` (`rails/peach`) | `/rails/peach` | `/api/rails/peach/*` |
+| `@ara-peaha-ai/robosats` (`rails/robosats`) | `/rails/robosats` | `/api/rails/robosats/*` |
 
 ### Flows
 
@@ -36,7 +36,7 @@ Módulos de funcionalidades de nivel superior con páginas y componentes de UI.
 
 | Package | Pages |
 |---------|-------|
-| `@paga-peaha-ai/booking` (`flows/booking`) | `/flows/booking`, `/flows/booking/embed` |
+| `@ara-peaha-ai/booking` (`flows/booking`) | `/flows/booking`, `/flows/booking/embed` |
 
 ### Services
 
@@ -44,8 +44,8 @@ Módulos de infraestructura que funcionan tanto como app Nitro standalone como m
 
 | Package | Routes | Notes |
 |---------|--------|-------|
-| `@paga-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Proxy inverso Tor, deshabilitado por defecto |
-| `@paga-peaha-ai/market` (`services/market`) | `/api/market/**` | Agregador de ofertas sin KYC (Bisq, RoboSats, Peach), deshabilitado por defecto |
+| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Proxy inverso Tor, deshabilitado por defecto |
+| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | Agregador de ofertas sin KYC (Bisq, RoboSats, Peach), deshabilitado por defecto |
 
 ## Qué no es esto
 
@@ -66,8 +66,8 @@ pnpm preview
 
 La app Nuxt raíz (`nuxt.config.js`) lista los módulos del workspace en el array `modules`. Cada módulo registra automáticamente sus páginas, composables y handlers del servidor cuando la app se inicia. Añadir un módulo requiere dos cambios:
 
-1. Añadir `"@paga-peaha-ai/<name>": "workspace:*"` a las dependencias del `package.json` raíz
-2. Añadir `'@paga-peaha-ai/<name>'` al array `modules` en `nuxt.config.js`
+1. Añadir `"@ara-peaha-ai/<name>": "workspace:*"` a las dependencias del `package.json` raíz
+2. Añadir `'@ara-peaha-ai/<name>'` al array `modules` en `nuxt.config.js`
 
 `flows/booking` requiere `@nuxt/ui`. Debe estar presente en `nuxt.config.js` antes o junto con el módulo booking.
 
@@ -85,7 +85,7 @@ La app Nuxt raíz (`nuxt.config.js`) lista los módulos del workspace en el arra
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `NUXT_ROBOSATS_COORDINATOR_URL` | no | onion por defecto de RoboSats | URL base onion del coordinador |
-| `NUXT_TOR_PROXY_SECRET` | yes | — | Secreto compartido para el proxy embebido `@paga-peaha-ai/tor` |
+| `NUXT_TOR_PROXY_SECRET` | yes | — | Secreto compartido para el proxy embebido `@ara-peaha-ai/tor` |
 | `NUXT_TOR_SOCKS_URL` | no | `socks5h://127.0.0.1:9050` | URL SOCKS5h del daemon Tor local |
 
 ### `rails/peach`
