@@ -28,6 +28,7 @@
     "@tesseract.js-data/eng": "^1.0.0",
     "@vladmandic/face-api": "^1.7.15",
     "nitropack": "^2.9.0",
-    "tesseract.js": "^7.0.0"
+    "tesseract.js": "^7.0.0",
+    "tesseract.js-core": "^7.0.0"
   }
 }

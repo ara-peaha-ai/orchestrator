@@ -14,6 +14,15 @@
   "exports": {
     ".": {
       "import": "./module/module.js"
+    },
+    "./createInvoice": {
+      "import": "./runtime/lib/createInvoice.js"
+    },
+    "./findInvoiceByOrderId": {
+      "import": "./runtime/lib/findInvoiceByOrderId.js"
+    },
+    "./updateInvoiceMetadata": {
+      "import": "./runtime/lib/updateInvoiceMetadata.js"
     }
   },
   "scripts": {

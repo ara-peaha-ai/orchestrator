@@ -1,4 +1,5 @@
 <script setup>
+import { CalendarDate } from '@internationalized/date'
 import { computeTotal } from '../lib/pricing.js'
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const form = reactive({
   timeSlot: '09:00-10:00'
 })
 
+const selectedDate = ref(new CalendarDate(2026, 3, 22))
 const selectedExtras = ref([])
 const extras = [
   { label: 'Priority confirmation (+10%)', value: 'priority' },
@@ -45,7 +47,7 @@ const payWithBitcoin = async () => {
   try {
     const { checkoutLink } = await $fetch('/flows/booking/checkout', {
       method: 'POST',
-      body: { ...form, extras: selectedExtras.value }
+      body: { ...form, bookingDate: selectedDate.value?.toString(), extras: selectedExtras.value }
     })
     await navigateTo(checkoutLink, { external: true })
   } catch (e) {
@@ -96,7 +98,7 @@ const payWithBitcoin = async () => {
           <template #header>
             <h2 class="text-lg font-semibold">Select Date</h2>
           </template>
-          <BookingCalendar :custom-mode="props.customMode" :custom-primary="props.customPrimary" />
+          <BookingCalendar v-model="selectedDate" :custom-mode="props.customMode" :custom-primary="props.customPrimary" />
         </UCard>
 
         <UCard>

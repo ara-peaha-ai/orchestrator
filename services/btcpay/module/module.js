@@ -6,12 +6,12 @@ const toBoolean = (v) => String(v || '').toLowerCase() === 'true'
 export default defineNuxtModule({
   meta: {
     name: '@ara-peaha-ai/btcpay',
-    configKey: 'peahaBtcpayRail'
+    configKey: 'btcpay'
   },
 
   defaults: {
     enabled: true,
-    prefix: '/api/rails/btcpay',
+    prefix: '/api/btcpay',
     btcpayUrl: undefined,
     btcpayApiKey: undefined,
     btcpayStoreId: undefined,
@@ -34,7 +34,7 @@ export default defineNuxtModule({
     rc.btcpayAdminSecret = options.btcpayAdminSecret ?? rc.btcpayAdminSecret ?? ''
     rc.btcpayPosCssUrl = options.btcpayPosCssUrl ?? rc.btcpayPosCssUrl ?? ''
 
-    const prefix = String(options.prefix || '/api/rails/btcpay').replace(/\/+$/, '')
+    const prefix = String(options.prefix || '/api/btcpay').replace(/\/+$/, '')
     const specific = endpointDefs.filter(e => e.method !== 'ALL')
     const catchAll = endpointDefs.filter(e => e.method === 'ALL')
 

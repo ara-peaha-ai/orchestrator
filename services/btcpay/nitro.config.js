@@ -1,6 +1,6 @@
 import { endpointDefs } from './module/definitions/endpoints.js'
 
-const prefix = '/api/rails/btcpay'
+const prefix = '/api/btcpay'
 
 export default defineNitroConfig({
   compatibilityDate: '2026-04-04',

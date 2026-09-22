@@ -76,6 +76,6 @@ No params — follows system dark/light preference and Nuxt UI default colors:
 
 - `POST /flows/booking/checkout` validates the body, computes the price server-side from `runtime/lib/pricing.js` (the client never sends an amount), creates a BTCPay invoice and returns `{ orderId, invoiceId, checkoutLink }`. Optional `currency` (`EUR` default, `USD`).
 - `GET /flows/booking/order?orderId=` returns the order status (`pending` | `paid`); `/flows/booking/thanks` polls it.
-- `runtime/plugins/btcpay-settled.js` listens to the `btcpay:invoice-settled` Nitro hook, marks the order paid and calls the `openPurchaseRequest` stub (where the RoboSats/Peach offer will be opened).
-- `createInvoice` is imported by relative path (`../../../../rails/btcpay/runtime/lib/createInvoice.js`) because the rail package only exports `.`.
-- Order state is an in-memory Map: lost on restart, replace with storage.
+- `runtime/plugins/btcpay-settled.js` listens to the `btcpay:invoice-settled` Nitro hook, calls the `openPurchaseRequest` stub (where the RoboSats/Peach offer will be opened), then marks the invoice `fulfilled` in its own metadata — only after `openPurchaseRequest` succeeds, so a failure there is retried on the next redelivery.
+- `@ara-peaha-ai/btcpay` is a workspace dependency, imported via its `./createInvoice`, `./findInvoiceByOrderId` and `./updateInvoiceMetadata` subpath exports.
+- There is no separate order store: the BTCPay invoice (and its metadata) is the order record. `POST /flows/booking/checkout` rate-limits to 5 attempts/minute per IP (in-memory, single-process).
