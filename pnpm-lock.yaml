@@ -11,6 +11,9 @@ importers:
       '@ara-peaha-ai/booking':
         specifier: workspace:*
         version: link:flows/booking
+      '@ara-peaha-ai/btcpay':
+        specifier: workspace:*
+        version: link:services/btcpay
       '@ara-peaha-ai/ip':
         specifier: workspace:*
         version: link:services/ip
@@ -41,6 +44,9 @@ importers:
 
   flows/booking:
     dependencies:
+      '@ara-peaha-ai/btcpay':
+        specifier: workspace:*
+        version: link:../../services/btcpay
       '@nuxt/kit':
         specifier: ^4.0.0
         version: 4.4.4(magicast@0.5.2)
@@ -123,6 +129,15 @@ importers:
       '@nuxt/kit':
         specifier: ^4.0.0
         version: 4.4.4(magicast@0.5.2)
+
+  services/btcpay:
+    dependencies:
+      '@nuxt/kit':
+        specifier: ^3.13.0
+        version: 3.21.4(magicast@0.5.2)
+      nitropack:
+        specifier: latest
+        version: 2.13.4(idb-keyval@6.3.0)(oxc-parser@0.128.0)
 
   services/cors:
     dependencies:

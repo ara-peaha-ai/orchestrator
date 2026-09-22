@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponentsDir, addImportsDir, addServerHandler, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addComponentsDir, addImportsDir, addServerHandler, addServerPlugin, addTemplate } from '@nuxt/kit'
 import { pageDefs } from './definitions/pages.js'
 import { endpointDefs } from './definitions/endpoints.js'
 import { middlewareDefs } from './definitions/middlewares.js'
@@ -41,6 +41,8 @@ export default defineNuxtModule({
         })
       }
     })
+
+    addServerPlugin(resolver.resolve('./runtime/plugins/btcpay-settled.js'))
 
     for (const mw of middlewareDefs) {
       addServerHandler({
