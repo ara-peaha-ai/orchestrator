@@ -7,7 +7,7 @@
 // - Copilot review body: "🟢 Approval recommended" = pass, any other overview = fail,
 //   "unable to review" (quota) = no verdict
 // - Human reviews: APPROVED = pass, CHANGES_REQUESTED = fail
-// - Marker comments from trusted authors (Grok, Laya gate, any other reviewer/gate):
+// - Marker comments from the repo owner or org members (Grok, Laya gate, any other reviewer/gate):
 //   <!-- review: <name> verdict=pass|fail sha=<head sha> -->
 // A fail on an older commit counts as addressed (no longer blocking, not a pass) once
 // new commits are pushed and none of the PR's review threads is still unresolved.
@@ -15,7 +15,7 @@
 // manual approval) on the Copilot bot's review: re-run via workflow_dispatch, or post
 // a marker comment (the Claude review pass does), which triggers issue_comment.
 //
-// Ready = at least one passing verdict, no fail, no unresolved thread, every other
+// Ready = at least one passing verdict on the head commit, no fail, no unresolved thread, every other
 // commit status / check run green, and every REQUIRED_REVIEWERS name passing.
 // Local dry run: GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=owner/repo PR_NUMBER=23 DRY_RUN=1 node .github/scripts/merge-ready.mjs
 
@@ -31,7 +31,8 @@ const required = (env.REQUIRED_REVIEWERS || '').split(',').map(s => s.trim().toL
 const dryRun = env.DRY_RUN === '1'
 const CONTEXT = 'merge-ready'
 const STICKY = '<!-- merge-ready -->'
-const TRUSTED = ['OWNER', 'MEMBER', 'COLLABORATOR']
+// COLLABORATOR left out: it covers any access level, including read-only
+const TRUSTED = ['OWNER', 'MEMBER']
 const COPILOT = 'copilot-pull-request-reviewer[bot]'
 
 const call = async (path, { method = 'GET', body } = {}) => {
@@ -103,14 +104,15 @@ const main = async () => {
   const add = (name, verdict, sha, at) => verdict ? verdicts.set(name.toLowerCase(), { name, verdict, sha, at }) : verdicts.delete(name.toLowerCase())
   const items = [
     ...reviews.map(r => ({ at: r.submitted_at, review: r })),
-    ...comments.map(c => ({ at: c.updated_at ?? c.created_at, comment: c }))
+    // created_at, not updated_at: editing an old marker must not move it after a newer verdict
+    ...comments.map(c => ({ at: c.created_at, comment: c }))
   ].sort((a, b) => new Date(a.at) - new Date(b.at))
 
   for (const { at, review, comment } of items) {
     if (review) {
       const login = review.user?.login ?? ''
-      if (login === COPILOT) add('copilot', copilotVerdict(review.body ?? ''), review.commit_id, at)
-      else if (review.state === 'DISMISSED' || review.dismissed) add(login, null)
+      if (review.state === 'DISMISSED' || review.dismissed) add(login === COPILOT ? 'copilot' : login, null)
+      else if (login === COPILOT) add('copilot', copilotVerdict(review.body ?? ''), review.commit_id, at)
       else if (review.state === 'APPROVED') add(login, 'pass', review.commit_id, at)
       else if (['CHANGES_REQUESTED', 'REQUEST_CHANGES'].includes(review.state)) add(login, 'fail', review.commit_id, at)
     } else {
@@ -120,15 +122,20 @@ const main = async () => {
     }
   }
 
-  const sameSha = (a, b) => a && b && (a.startsWith(b) || b.startsWith(a))
+  const sameSha = (a, b) => {
+    if (!a || !b) return false
+    const [x, y] = [a.toLowerCase(), b.toLowerCase()]
+    return x.startsWith(y) || y.startsWith(x)
+  }
   const rows = [...verdicts.values()].map(v => {
     const stale = v.sha && !sameSha(v.sha, head)
-    // a fail on an older commit is addressed once fixes are pushed and every thread is resolved
-    const state = v.verdict === 'pass' ? 'pass' : stale && threads === 0 ? 'addressed' : 'fail'
+    // a pass counts only on the head commit; a fail on an older commit is addressed once fixes
+    // are pushed and every thread is resolved
+    const state = v.verdict === 'pass' ? (stale ? 'stale' : 'pass') : stale && threads === 0 ? 'addressed' : 'fail'
     return { ...v, stale, state }
   })
   // human CHANGES_REQUESTED stays blocking until re-reviewed, as on GitHub
-  for (const r of rows) if (r.state === 'addressed' && reviews.some(x => x.user?.login === r.name && ['CHANGES_REQUESTED', 'REQUEST_CHANGES'].includes(x.state))) r.state = 'fail'
+  for (const r of rows) if (r.state === 'addressed' && reviews.some(x => x.user?.login?.toLowerCase() === r.name.toLowerCase() && ['CHANGES_REQUESTED', 'REQUEST_CHANGES'].includes(x.state))) r.state = 'fail'
 
   const otherChecks = [
     ...combined.statuses.filter(s => s.context !== CONTEXT).map(s => ({ name: s.context, state: s.state === 'success' ? 'ok' : s.state === 'pending' ? 'pending' : 'fail' })),
