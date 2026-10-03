@@ -1,6 +1,4 @@
-[![AI generated doc](https://deepwiki.com/badge.svg)](https://deepwiki.com/peaha/pay-orchestrator)
-
-# @ara-peaha-ai/pay ##todo @ai #master true #pri 1
+# @ara-peaha-ai/orchestrator
 
 ## Stage
 
@@ -34,14 +32,10 @@ All the integration are based on public avaialble API or MCP meant to be publicc
 
 ## Description
 
-Orchestrator repo for PE'AHA ecosystem. 
-
-It assembles **PAY** & **AI** funcionalities. 
+**PAY** orchestrator repo for PE'AHA ecosystem. 
 
 Most of the repos are in dual mode as a module to import in a Nuxt project or standalone as a server.
   
-The Payment and the AI integrations are ment to be run isolated eachother on two web apps with one of the two channels enabled.  
-
 ## What exists today
 
 ### PAY
@@ -58,7 +52,7 @@ Robosats requires a Bond on LN. When completed it is meant to be used for return
 
 While Peach requires to import and existing keypairs of an account with trading history to have all the needed functionalties.
 
-Nostr in the next coming, in high priority, that in thoery solves both previous issues, but previous issues where news during the development.
+Mostro is the next high-priority integration. In theory, it addresses both issues above.
 
 Bisq has not been yet even evaluated and it is mentioned here as a note.
 
@@ -88,12 +82,8 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 |---------|--------|-------|
 | `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default |
 | `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
-| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | KYC-free offer aggregator (Bisq, RoboSats, Peach), disabled by default |
+| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default |
 | `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default |
-
-### AI
-
-##todo @giovanni
 
 ## Local development
 
