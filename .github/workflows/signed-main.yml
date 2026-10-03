@@ -1,0 +1,32 @@
+name: Signed commits on main
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail on unsigned commits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          # ponytail: reports after the push, it does not block it
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            # new branch: whole history
+            rows=$(gh api --paginate "repos/$GITHUB_REPOSITORY/commits?sha=$AFTER&per_page=100" --jq '.[] | "\(.sha) \(.commit.verification.verified)"')
+          else
+            rows=$(gh api --paginate "repos/$GITHUB_REPOSITORY/compare/$BEFORE...$AFTER?per_page=100" --jq '.commits[] | "\(.sha) \(.commit.verification.verified)"')
+            # compare lists at most 250 commits: a bigger push is never reported as all signed
+            total=$(gh api "repos/$GITHUB_REPOSITORY/compare/$BEFORE...$AFTER" --jq .total_commits)
+            if [ "$total" -gt "$(echo "$rows" | grep -c .)" ]; then echo "::error::Push of $total commits, only part listed: check signatures by hand"; exit 1; fi
+          fi
+          unsigned=$(echo "$rows" | awk '$2 != "true" {print $1}')
+          for sha in $unsigned; do echo "::error::Unsigned commit on main: $sha"; done
+          [ -z "$unsigned" ]
