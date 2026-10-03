@@ -1,6 +1,7 @@
 import { createError, getRequestHeader, setResponseHeader } from 'h3'
 import countryToCurrency from 'country-to-currency'
 import { getRealIp } from '../utils/getRealIp.js'
+import { deduce } from '../utils/deduce.js'
 
 // In-memory rate limit buckets
 const buckets = new Map()
@@ -42,9 +43,8 @@ const getCfCountry = (event, cloudflareSecret) => {
     if (token !== cloudflareSecret) return undefined
   }
 
-  const cfCountry = getRequestHeader(event, 'cf-ipcountry')
-  if (!cfCountry || CF_INVALID.has(cfCountry)) return undefined
-  return cfCountry
+  // Raw value: T1 (Tor) is kept for the deduction, filtered out of `country`
+  return getRequestHeader(event, 'cf-ipcountry') || undefined
 }
 
 const getIpinfoData = async (event, ipinfoApiKey) => {
@@ -57,7 +57,7 @@ const getIpinfoData = async (event, ipinfoApiKey) => {
     })
     const country = res?.country_code || undefined
     const currency = country ? countryToCurrency[country] : undefined
-    return { country, currency }
+    return { country, currency, asn: res?.asn, asName: res?.as_name }
   } catch {
     return {}
   }
@@ -104,10 +104,11 @@ export default defineEventHandler(async (event) => {
   const result = { ip: getRealIp(event) }
 
   // CF and IPinfo run in parallel when both are configured
-  const [cfCountry, ipinfoData] = await Promise.all([
+  const [cfRaw, ipinfoData] = await Promise.all([
     Promise.resolve(getCfCountry(event, cloudflareSecret)),
     ipinfoApiKey ? getIpinfoData(event, ipinfoApiKey) : Promise.resolve({})
   ])
+  const cfCountry = CF_INVALID.has(cfRaw) ? undefined : cfRaw
 
   if (countryEnabled) {
     result.country = cfCountry || undefined
@@ -118,6 +119,10 @@ export default defineEventHandler(async (event) => {
     result.currency = cfCountry ? countryToCurrency[cfCountry] : undefined
     if (ipinfoApiKey) result.currencyIPinfo = ipinfoData.currency
   }
+
+  // Always both sources + what their mismatch means (e.g. CF US + DB PY = Proton Smart Routing)
+  Object.assign(result, deduce({ cf: cfRaw, db: ipinfoData.country }))
+  if (ipinfoApiKey) Object.assign(result, { countryCloudflare: cfRaw, countryDb: ipinfoData.country, asn: ipinfoData.asn, asName: ipinfoData.asName })
 
   event.context.ipDetection = result
 })

@@ -17,7 +17,7 @@ Dual mode: standalone Nitro app or Nuxt module (`configKey: dontTrustVerify`).
    - person and ID portrait match (distance < `matchThreshold`).
    If the date of birth is unreadable in the photo, `verify(photo, idScan)` accepts a close-up of the same ID (its portrait must match the one in the photo).
 4. **Register (client → server):** POST `{ code, ageVerified, face }` where `face` is a 224 px crop of the person's face only (never the ID, the sheet or the date of birth). The server burns the challenge, validates it, computes the face vector itself on CPU, stores the vector and drops the crop.
-5. **Training upload:** POST one crop per face found in the training image to `/match`. The server computes the vectors, compares them with the stored reference and returns `{ match, distances }`. `match` is true only if every face matches. The reference vector never goes back to the client.
+5. **Training upload:** POST one crop per face found in the training image to `/match` (a whole image up to 512 px also works). The server computes a vector for every face it finds in each crop, compares them with the stored reference and returns `{ match, distances }`. `match` is true only if every face matches. The reference vector never goes back to the client.
 
 Models, OCR worker, WASM core and language data are self-hosted under `<prefix>/assets/*` (from npm packages), so no third-party CDN sees the user.
 

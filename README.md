@@ -1,3 +1,5 @@
+# @ara-peaha-ai/orchestrator
+
 ## Stage
 
 Most of the repos/modules in this monorepo are ready to be tested in projects not in production stage.  
@@ -50,7 +52,7 @@ Robosats requires a Bond on LN. When completed it is meant to be used for return
 
 While Peach requires to import and existing keypairs of an account with trading history to have all the needed functionalties.
 
-Mostro in the next coming, in high priority, that in thoery solves both previous issues.
+Mostro is the next high-priority integration. In theory, it addresses both issues above.
 
 Bisq has not been yet even evaluated and it is mentioned here as a note.
 
@@ -78,9 +80,10 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 
 | Package | Routes | Notes |
 |---------|--------|-------|
-| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency), disabled by default |
+| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default |
 | `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
 | `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default |
+| `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default |
 
 ## Local development
 
