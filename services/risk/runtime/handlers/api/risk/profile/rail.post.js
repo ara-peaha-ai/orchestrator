@@ -18,5 +18,5 @@ export default defineEventHandler(async (event) => {
     if (err.statusCode === 400) throw err
     result = { status: 'error', reason: err.message }
   }
-  return saveRail(profile, name, result)
+  return saveRail(profile.id, name, result)
 })

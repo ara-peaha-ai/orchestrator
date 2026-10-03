@@ -6,7 +6,7 @@ import ip from '../../../rails/ip.js'
 // The click is the only request from the subject's own connection, so the ip rail runs here.
 export default defineEventHandler(async (event) => {
   const profile = await getProfile(getRouterParam(event, 'id'))
-  await saveRail(profile, 'ip', await ip({ event }))
+  await saveRail(profile.id, 'ip', await ip({ event }))
   const next = getUseCase(profile.useCase).consentNext
   if (next) return sendRedirect(event, next, 303)
   setResponseHeader(event, 'content-type', 'text/html; charset=utf-8')

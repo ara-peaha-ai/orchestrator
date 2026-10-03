@@ -10,18 +10,19 @@ export default defineNuxtModule({
     configKey: 'risk'
   },
 
+  // '' and not undefined: undefined keys are dropped from runtime config, so NUXT_RISK_* would not apply
   defaults: {
     enabled: false,
     prefix: '/api/risk',
-    secret: undefined,
-    useCasesFile: undefined,
+    secret: '',
+    useCasesFile: '',
     workDir: '/tmp/risk',
-    cookiesFile: undefined,
+    cookiesFile: '',
     monidFallback: false,
-    sightengineUser: undefined,
-    sightengineSecret: undefined,
-    dontTrustVerifyUrl: undefined,
-    dontTrustVerifySecret: undefined,
+    sightengineUser: '',
+    sightengineSecret: '',
+    dontTrustVerifyUrl: '',
+    dontTrustVerifySecret: '',
     mempoolUrl: 'https://mempool.space/api'
   },
 
