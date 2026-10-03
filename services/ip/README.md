@@ -97,9 +97,33 @@ Example shape:
   country: "PY",
   currency: "PYG",
   countryIPinfo: "PY",
-  currencyIPinfo: "PYG"
+  currencyIPinfo: "PYG",
+  countryCloudflare: "US",
+  countryDb: "PY",
+  asn: "AS9009",
+  asName: "M247 Europe SRL",
+  deduction: "proton-smart-routing",
+  vpn: true
 }
 ```
+
+`deduction` is computed on every request from the raw Cloudflare value (Tor `T1` included) and the IPinfo country:
+
+| Cloudflare | IPinfo | `deduction` | `vpn` |
+|---|---|---|---|
+| X | X | `consistent` | `false` |
+| X | missing (no IPinfo key, or lookup failed) | `no-db` | `false` |
+| US / GB / FR | a Proton Smart Routing country (PY, UY, EC, ...) | `proton-smart-routing` | `true` |
+| X | Y | `vpn` | `true` |
+| `T1` | any | `tor` | `true` |
+| missing | X | `no-cloudflare` | `false` |
+| missing | missing | `unknown` | `false` |
+
+AR, BO, BR, CL, CO, MX and PE are mixed Proton locations (physical or routed), so `proton-smart-routing` there is a weaker hint. `countryCloudflare`, `countryDb`, `asn` and `asName` are only set with an IPinfo key, and nothing runs when both `country` and `currency` are off.
+
+`pnpm check` runs the deduction checks.
+
+`services/risk` reads these fields as one weak signal in a consent-based risk profile. Here too: a VPN lowers location confidence, it is never a reason to block.
 
 Cloudflare is currently treated as the primary infrastructure signal.
 

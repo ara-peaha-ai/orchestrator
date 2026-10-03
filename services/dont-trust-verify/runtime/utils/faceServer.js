@@ -25,7 +25,8 @@ const load = () => loading ??= (async () => {
 })
 
 // face: { width, height, rgb } with rgb as base64 of width*height*3 bytes. Used and dropped, never stored.
-export const descriptorFromFace = async (face) => {
+// Returns one descriptor per face found, biggest first.
+export const descriptorsFromFace = async (face) => {
   const { width, height, rgb } = face || {}
   const sizeOk = Number.isInteger(width) && Number.isInteger(height) && width > 0 && height > 0 &&
     width <= MAX_SIDE && height <= MAX_SIDE
@@ -44,10 +45,12 @@ export const descriptorFromFace = async (face) => {
       .detectAllFaces(tensor, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.3 }))
       .withFaceLandmarks()
       .withFaceDescriptors()
-    if (!found.length) return null
-    const biggest = found.sort((a, b) => b.detection.box.area - a.detection.box.area)[0]
-    return Array.from(biggest.descriptor)
+    return found
+      .sort((a, b) => b.detection.box.area - a.detection.box.area)
+      .map(f => Array.from(f.descriptor))
   } finally {
     tensor.dispose()
   }
 }
+
+export const descriptorFromFace = async (face) => (await descriptorsFromFace(face))[0] || null

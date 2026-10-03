@@ -1,0 +1,23 @@
+{
+  "buyer.basic": {
+    "rails": [
+      "ip",
+      "social",
+      "face",
+      "genai",
+      "pep"
+    ]
+  },
+  "buyer.prestige": {
+    "rails": [
+      "ip",
+      "social",
+      "face",
+      "genai",
+      "pep",
+      "bank",
+      "btc"
+    ],
+    "consentNext": "https://example.com/verify"
+  }
+}
