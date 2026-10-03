@@ -1,0 +1,35 @@
+import sharp from 'sharp'
+import { createError } from 'h3'
+import { readImage } from '../utils/images.js'
+
+const MAX_SIDE = 512 // dont-trust-verify rejects bigger images
+
+// input: { images: ['instagram-03.jpg', ...] }, the 3-4 the operator picked.
+// The subject must have completed the dont-trust-verify flow with user id = profile id (reference vector).
+export default async ({ profile, input }) => {
+  const { dontTrustVerifyUrl: url, dontTrustVerifySecret: secret } = useRuntimeConfig().risk
+  if (!url || !secret) return { status: 'skipped', reason: 'dont-trust-verify not configured' }
+  const names = input.images
+  if (!Array.isArray(names) || !names.length || names.length > 4) {
+    throw createError({ statusCode: 400, statusMessage: 'images: 1-4 names' })
+  }
+
+  let matches = 0
+  const distances = []
+  for (const name of names) {
+    const { data, info } = await sharp(await readImage(profile.id, name))
+      .resize(MAX_SIDE, MAX_SIDE, { fit: 'inside', withoutEnlargement: true })
+      .removeAlpha()
+      .toColourspace('srgb')
+      .raw()
+      .toBuffer({ resolveWithObject: true })
+    const res = await $fetch(`${url}/match`, {
+      method: 'POST',
+      headers: { 'x-dont-trust-verify-secret': secret, 'x-user-id': profile.id },
+      body: { faces: [{ width: info.width, height: info.height, rgb: data.toString('base64') }] }
+    })
+    if (res.match) matches++
+    distances.push(res.distances?.[0] ?? null)
+  }
+  return { status: 'ok', signals: { checked: names.length, matches }, distances }
+}

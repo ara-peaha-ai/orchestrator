@@ -1,5 +1,5 @@
 {
-  "name": "@ara-peaha-ai/ip",
+  "name": "@ara-peaha-ai/risk",
   "version": "0.1.0",
   "author": "p2pagos & learntheropes",
   "license": "MIT",
@@ -18,11 +18,13 @@
   "scripts": {
     "dev": "nitro dev",
     "build": "nitro build",
-    "check": "node runtime/utils/deduce.check.js"
+    "start": "node .output/server/index.mjs",
+    "check": "node runtime/utils/score.check.js"
   },
   "dependencies": {
     "@nuxt/kit": "^3.13.0",
-    "country-to-currency": "^1.0.0",
-    "nitropack": "latest"
+    "bip322-js": "^4.0.0",
+    "nitropack": "^2.9.0",
+    "sharp": "^0.34.0"
   }
 }
