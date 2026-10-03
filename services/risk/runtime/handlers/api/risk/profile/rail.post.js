@@ -3,7 +3,7 @@ import { getProfile, saveRail } from '../../../../utils/profiles.js'
 import { getUseCase } from '../../../../utils/useCases.js'
 import { rails } from '../../../../rails/index.js'
 
-// Runs one rail with its input and rescores. Only rails listed in the profile's use case.
+// Runs one rail with its input and stores its raw result. Only rails listed in the profile's use case.
 export default defineEventHandler(async (event) => {
   const profile = await getProfile(getRouterParam(event, 'id'))
   const name = getRouterParam(event, 'rail')

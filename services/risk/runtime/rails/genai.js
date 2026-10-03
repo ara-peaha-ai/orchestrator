@@ -15,7 +15,7 @@ export default async ({ profile, input }) => {
     throw createError({ statusCode: 400, statusMessage: `${names.length} images: pick at most ${MAX_IMAGES} and pass them as images` })
   }
 
-  const scores = []
+  const results = []
   for (const name of names) {
     const form = new FormData()
     form.append('media', new Blob([await readImage(profile.id, name)]), name)
@@ -24,11 +24,7 @@ export default async ({ profile, input }) => {
     form.append('api_secret', sightengineSecret)
     const data = await (await fetch('https://api.sightengine.com/1.0/check.json', { method: 'POST', body: form })).json()
     if (data.status !== 'success') throw new Error(`Sightengine: ${data.error?.message || 'request failed'}`)
-    scores.push(data.type.ai_generated)
+    results.push({ image: name, type: data.type })
   }
-  return {
-    status: 'ok',
-    signals: { checked: scores.length, max: Math.max(...scores), mean: scores.reduce((a, b) => a + b, 0) / scores.length },
-    scores: Object.fromEntries(names.map((n, i) => [n, scores[i]]))
-  }
+  return { status: 'ok', results }
 }

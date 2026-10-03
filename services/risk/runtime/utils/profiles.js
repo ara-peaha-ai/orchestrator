@@ -1,5 +1,4 @@
 import { createError } from 'h3'
-import { score } from './score.js'
 import { getUseCase } from './useCases.js'
 
 // Default storage is memory: mount a persistent driver on 'risk' in the host app (Postgres on the VPS)
@@ -21,19 +20,18 @@ const serialized = (id, fn) => {
   return run
 }
 
-// Re-reads the latest record before merging, so two rails finishing together never drop each other
+// Raw rail results only: classification is up to whoever reads them (operator or a private config).
+// Re-reads the latest record before merging, so two rails finishing together never drop each other.
 export const saveRail = (id, rail, result) => serialized(id, async () => {
   const profile = await getProfile(id)
   profile.rails[rail] = { ...result, at: Date.now() }
-  const { rules, rails } = getUseCase(profile.useCase)
-  profile.score = score(profile.rails, rules, rails)
   await storage().setItem(`profile:${id}`, profile)
   return profile
 })
 
 export const createProfile = async (useCase) => {
-  const { rules, rails } = getUseCase(useCase) // also validates the name
-  const profile = { id: crypto.randomUUID(), useCase, createdAt: Date.now(), rails: {}, score: score({}, rules, rails) }
+  getUseCase(useCase) // validates the name
+  const profile = { id: crypto.randomUUID(), useCase, createdAt: Date.now(), rails: {} }
   await storage().setItem(`profile:${profile.id}`, profile)
   return profile
 }

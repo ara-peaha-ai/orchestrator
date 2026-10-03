@@ -3,7 +3,7 @@ import { createError } from 'h3'
 
 let cache
 
-// Thresholds and weights live in a private JSON file (see use-cases.example.json), never in this public repo
+// Private JSON file (see use-cases.example.json): which rails each use case may run, consent next step
 export const getUseCase = (name) => {
   const { useCasesFile } = useRuntimeConfig().risk
   if (!useCasesFile) throw createError({ statusCode: 500, statusMessage: 'NUXT_RISK_USE_CASES_FILE not set' })

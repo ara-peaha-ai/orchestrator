@@ -1,30 +1,4 @@
 {
-  "lead": {
-    "rails": [],
-    "rules": [
-      {
-        "rail": "lead",
-        "signal": "oldestPostDays",
-        "op": "<",
-        "value": 30,
-        "risk": 10
-      },
-      {
-        "rail": "lead",
-        "signal": "oldestPostDays",
-        "op": ">=",
-        "value": 365,
-        "trust": 10
-      },
-      {
-        "rail": "lead",
-        "signal": "links",
-        "op": ">=",
-        "value": 2,
-        "risk": 10
-      }
-    ]
-  },
   "buyer.basic": {
     "rails": [
       "ip",
@@ -32,50 +6,6 @@
       "face",
       "genai",
       "pep"
-    ],
-    "rules": [
-      {
-        "rail": "ip",
-        "signal": "tor",
-        "op": "==",
-        "value": true,
-        "risk": 10
-      },
-      {
-        "rail": "face",
-        "signal": "matches",
-        "op": ">=",
-        "value": 2,
-        "trust": 10
-      },
-      {
-        "rail": "face",
-        "signal": "matches",
-        "op": "==",
-        "value": 0,
-        "risk": 10
-      },
-      {
-        "rail": "genai",
-        "signal": "max",
-        "op": ">=",
-        "value": 0.8,
-        "risk": 10
-      },
-      {
-        "rail": "social",
-        "signal": "oldestPostDays",
-        "op": ">=",
-        "value": 365,
-        "trust": 10
-      },
-      {
-        "rail": "pep",
-        "signal": "hit",
-        "op": "==",
-        "value": true,
-        "risk": 10
-      }
     ]
   },
   "buyer.prestige": {
@@ -88,57 +18,6 @@
       "bank",
       "btc"
     ],
-    "consentNext": "https://example.com/verify",
-    "rules": [
-      {
-        "rail": "ip",
-        "signal": "tor",
-        "op": "==",
-        "value": true,
-        "risk": 10
-      },
-      {
-        "rail": "face",
-        "signal": "matches",
-        "op": ">=",
-        "value": 2,
-        "trust": 10
-      },
-      {
-        "rail": "face",
-        "signal": "matches",
-        "op": "==",
-        "value": 0,
-        "risk": 10
-      },
-      {
-        "rail": "genai",
-        "signal": "max",
-        "op": ">=",
-        "value": 0.8,
-        "risk": 10
-      },
-      {
-        "rail": "pep",
-        "signal": "hit",
-        "op": "==",
-        "value": true,
-        "risk": 10
-      },
-      {
-        "rail": "btc",
-        "signal": "valid",
-        "op": "==",
-        "value": false,
-        "risk": 10
-      },
-      {
-        "rail": "btc",
-        "signal": "balanceSat30d",
-        "op": ">=",
-        "value": 100000000,
-        "trust": 10
-      }
-    ]
+    "consentNext": "https://example.com/verify"
   }
 }

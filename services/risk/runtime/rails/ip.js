@@ -3,8 +3,6 @@
 export default async ({ event }) => {
   const d = event.context.ipDetection
   if (!d) return { status: 'skipped', reason: 'services/ip not enabled' }
-  return {
-    status: 'ok',
-    signals: { vpn: d.vpn, tor: d.deduction === 'tor', deduction: d.deduction, country: d.countryDb || d.country }
-  }
+  // Raw services/ip output; its deduction (Cloudflare vs IPinfo, e.g. Proton Smart Routing) is the only analysis
+  return { status: 'ok', ...d }
 }

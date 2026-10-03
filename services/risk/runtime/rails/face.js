@@ -16,8 +16,7 @@ export default async ({ profile, input }) => {
     throw createError({ statusCode: 400, statusMessage: 'images: 1-4 names' })
   }
 
-  let matches = 0
-  const distances = []
+  const results = []
   for (const name of names) {
     const { data, info } = await sharp(await readImage(profile.id, name))
       .resize(MAX_SIDE, MAX_SIDE, { fit: 'inside', withoutEnlargement: true })
@@ -30,8 +29,7 @@ export default async ({ profile, input }) => {
       headers: { 'x-dont-trust-verify-secret': secret, 'x-user-id': profile.id },
       body: { faces: [{ width: info.width, height: info.height, rgb: data.toString('base64') }] }
     })
-    if (res.match) matches++
-    distances.push(res.distances || [])
+    results.push({ image: name, match: res.match, reason: res.reason, distances: res.distances })
   }
-  return { status: 'ok', signals: { checked: names.length, matches }, distances }
+  return { status: 'ok', results }
 }

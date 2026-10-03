@@ -6,7 +6,6 @@ import { saveImages } from '../utils/images.js'
 const run = promisify(execFile)
 const LIMIT = 10
 const HANDLE = /^[A-Za-z0-9._]{1,30}$/
-const DAY = 86_400_000
 
 // gallery-dl prints UTC dates as 'YYYY-MM-DD HH:MM:SS'
 const toIso = (d) => {
@@ -67,8 +66,7 @@ export const fetchPosts = async (platform, handle) => {
   if (!['instagram', 'tiktok'].includes(platform)) throw createError({ statusCode: 400, statusMessage: 'platform: instagram | tiktok' })
   if (!HANDLE.test(String(handle))) throw createError({ statusCode: 400, statusMessage: 'Invalid handle' })
   const { cookiesFile, monidFallback } = useRuntimeConfig().risk
-  // A blocked CLI must not look like an empty profile (that would score as a bot): an empty answer
-  // cannot be told apart from a silent block, so it is an error too
+  // An empty answer cannot be told apart from a silent block, so it is an error, never an empty profile
   const posts = await cli(platform, handle, cookiesFile).catch(() => [])
   if (posts.length) return { posts, source: 'cli' }
   if (monidFallback) {
@@ -78,17 +76,9 @@ export const fetchPosts = async (platform, handle) => {
   throw createError({ statusCode: 502, statusMessage: `${platform}: no posts returned (blocked, private or empty profile)` })
 }
 
-export const postSignals = (posts) => {
-  const dates = posts.map(p => Date.parse(p.date)).filter(Number.isFinite)
-  return {
-    posts: posts.length,
-    oldestPostDays: dates.length ? Math.floor((Date.now() - Math.min(...dates)) / DAY) : undefined
-  }
-}
-
 // input: { platform, handle }. The operator then picks 3-4 of the saved images for face and genai.
 export default async ({ profile, input }) => {
   const { posts, source } = await fetchPosts(input.platform, input.handle)
   const images = await saveImages(profile.id, input.platform, posts.map(p => p.url).filter(Boolean), LIMIT)
-  return { status: 'ok', signals: { ...postSignals(posts), images: images.length, source }, images }
+  return { status: 'ok', source, posts, images }
 }
