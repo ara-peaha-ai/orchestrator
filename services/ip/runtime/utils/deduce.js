@@ -1,7 +1,8 @@
 // CF-IPCountry reports where the server physically is, the IPinfo DB the country the IP is registered for.
 // The mismatch between the two is the signal.
 
-// VPN countries Proton serves through physical servers elsewhere (Smart Routing)
+// VPN countries Proton serves through physical servers elsewhere (Smart Routing).
+// AR, BO, BR, CL, CO, MX, PE are mixed (physical or routed): the deduction there is weaker.
 const PROTON_SMART_ROUTING = new Set([
   'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HT', 'HN', 'JM', 'LY', 'LI', 'NI', 'PA', 'PY', 'UY', 'VE',
   'AR', 'BO', 'BR', 'CL', 'CO', 'MX', 'PE'
@@ -13,7 +14,8 @@ export const deduce = ({ cf, db }) => {
   if (cf === 'T1') return { deduction: 'tor', vpn: true }
   if (!cf && !db) return { deduction: 'unknown', vpn: false }
   if (!cf) return { deduction: 'no-cloudflare', vpn: false }
-  if (!db || cf === db) return { deduction: 'consistent', vpn: false }
+  if (!db) return { deduction: 'no-db', vpn: false }
+  if (cf === db) return { deduction: 'consistent', vpn: false }
   if (PROTON_PHYSICAL.has(cf) && PROTON_SMART_ROUTING.has(db)) {
     return { deduction: 'proton-smart-routing', vpn: true }
   }

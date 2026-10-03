@@ -18,8 +18,14 @@ assert.equal(r.risk, 10)
 assert.equal(r.trust, 40)
 assert.equal(r.hits.length, 2)
 
+// Required rails that did not run make the profile incomplete
+const req = score({ ip: { status: 'ok', signals: {} }, pep: { status: 'skipped' } }, rules, ['ip', 'pep', 'face'])
+assert.equal(req.complete, false)
+assert.deepEqual(req.missing, ['pep', 'face'])
+assert.equal(score({ ip: { status: 'ok', signals: {} } }, rules, ['ip']).complete, true)
+
 // Missing or failed rails add nothing, scores are clamped to 0-100
-assert.deepEqual(score({}, rules), { risk: 0, trust: 0, hits: [] })
+assert.deepEqual(score({}, rules), { risk: 0, trust: 0, hits: [], complete: true, missing: [] })
 assert.equal(score({ genai: { status: 'error', signals: { max: 1 } } }, rules).risk, 0)
 assert.equal(score({
   genai: { status: 'ok', signals: { max: 0.9 } },

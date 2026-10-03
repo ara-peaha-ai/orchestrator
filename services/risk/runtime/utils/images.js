@@ -5,7 +5,8 @@ import { createError } from 'h3'
 const MAX_BYTES = 10 * 1024 * 1024
 // Only CDN hosts the scrapers return: the URLs come from third-party output, never fetch anything else
 const ALLOWED_HOSTS = ['cdninstagram.com', 'fbcdn.net', 'tiktokcdn.com', 'tiktokcdn-us.com', 'tiktokcdn-eu.com', 'ibyteimg.com']
-const NAME = /^[a-z]+-\d{2}\.(jpg|png|webp)$/
+// Plain file names only (no slash, no leading dot): the operator may also drop images in the folder by hand
+const NAME = /^[\w-][\w.-]*\.(jpe?g|png|webp)$/i
 
 const allowedHost = (url) => {
   try {
@@ -46,7 +47,7 @@ export const saveImages = async (id, platform, urls, limit) => {
 
 export const listImages = async (id) => (await readdir(profileDir(id)).catch(() => [])).filter(n => NAME.test(n))
 
-// Names come from the request: only names saveImages produced are accepted, so no path traversal
+// Names come from the request: plain file names only, so no path traversal
 export const readImage = async (id, name) => {
   if (!NAME.test(String(name))) throw createError({ statusCode: 400, statusMessage: `Invalid image name: ${name}` })
   return readFile(join(profileDir(id), name))

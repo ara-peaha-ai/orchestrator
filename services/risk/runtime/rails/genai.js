@@ -1,12 +1,19 @@
+import { createError } from 'h3'
 import { readImage, listImages } from '../utils/images.js'
 
-// Sightengine free plan: 2,000 ops/month, 500/day; one op per image.
-// input: { images?: [...] }, all saved images when omitted.
+// Free plan credits: never more than 5 images (25 ops) per call
+const MAX_IMAGES = 5
+
+// Sightengine free plan: 2,000 ops/month, 500/day; the genai model costs 5 ops per image (~400 images/month).
+// input: { images?: [...] }, the whole folder when omitted and it holds at most MAX_IMAGES.
 export default async ({ profile, input }) => {
   const { sightengineUser, sightengineSecret } = useRuntimeConfig().risk
   if (!sightengineUser || !sightengineSecret) return { status: 'skipped', reason: 'Sightengine not configured' }
   const names = input.images?.length ? input.images : await listImages(profile.id)
   if (!names.length) return { status: 'skipped', reason: 'no images, run the social rail first' }
+  if (names.length > MAX_IMAGES) {
+    throw createError({ statusCode: 400, statusMessage: `${names.length} images: pick at most ${MAX_IMAGES} and pass them as images` })
+  }
 
   const scores = []
   for (const name of names) {

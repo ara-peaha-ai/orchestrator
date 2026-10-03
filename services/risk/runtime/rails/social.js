@@ -35,12 +35,19 @@ const cli = async (platform, handle, cookiesFile) => {
 }
 
 // ponytail: output shape not verified with a paid run, collects every image-like URL by key name
+// and takes the post date from a sibling key of the same object
 const IMAGE_KEY = /^(displayUrl|display_url|cover|originCover|thumbnail|thumbnailUrl)$/i
+const DATE_KEY = /^(timestamp|takenAtTimestamp|taken_at|createTime|createTimeISO)$/
+const dateOf = (obj) => {
+  const v = Object.entries(obj).find(([k]) => DATE_KEY.test(k))?.[1]
+  if (typeof v === 'number') return toIso(new Date(v < 1e12 ? v * 1000 : v).toISOString())
+  return typeof v === 'string' ? toIso(v) : undefined
+}
 const imageUrls = (node, out = []) => {
   if (Array.isArray(node)) node.forEach(n => imageUrls(n, out))
   else if (node && typeof node === 'object') {
     for (const [k, v] of Object.entries(node)) {
-      if (typeof v === 'string' && IMAGE_KEY.test(k)) out.push({ url: v })
+      if (typeof v === 'string' && IMAGE_KEY.test(k)) out.push({ url: v, date: dateOf(node) })
       else imageUrls(v, out)
     }
   }
@@ -60,12 +67,15 @@ export const fetchPosts = async (platform, handle) => {
   if (!['instagram', 'tiktok'].includes(platform)) throw createError({ statusCode: 400, statusMessage: 'platform: instagram | tiktok' })
   if (!HANDLE.test(String(handle))) throw createError({ statusCode: 400, statusMessage: 'Invalid handle' })
   const { cookiesFile, monidFallback } = useRuntimeConfig().risk
-  // A blocked CLI must not look like an empty profile (that would score as a bot)
-  const posts = await cli(platform, handle, cookiesFile).catch(() => null)
-  if (posts?.length) return { posts, source: 'cli' }
-  if (monidFallback) return { posts: await monid(platform, handle), source: 'monid' }
-  if (posts) return { posts, source: 'cli' }
-  throw createError({ statusCode: 502, statusMessage: `${platform} scraping blocked or failed, no fallback enabled` })
+  // A blocked CLI must not look like an empty profile (that would score as a bot): an empty answer
+  // cannot be told apart from a silent block, so it is an error too
+  const posts = await cli(platform, handle, cookiesFile).catch(() => [])
+  if (posts.length) return { posts, source: 'cli' }
+  if (monidFallback) {
+    const fallback = await monid(platform, handle)
+    if (fallback.length) return { posts: fallback, source: 'monid' }
+  }
+  throw createError({ statusCode: 502, statusMessage: `${platform}: no posts returned (blocked, private or empty profile)` })
 }
 
 export const postSignals = (posts) => {

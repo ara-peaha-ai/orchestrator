@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { descriptorFromFace } from '../../../utils/faceServer.js'
+import { descriptorsFromFace } from '../../../utils/faceServer.js'
 import { euclideanDistance } from '../../../utils/checks.js'
 
 const MAX_FACES = 5
@@ -9,8 +9,8 @@ const MAX_FACES = 5
 // ponytail: per-process lock, multi-instance deploys need a shared rate limiter.
 const inFlight = new Set()
 
-// One crop per face found in the training image. Every face must match the reference:
-// an image that also contains someone else is rejected.
+// One crop per face found in the training image, or a whole image. Every face found in every crop
+// must match the reference: an image that also contains someone else is rejected.
 export default defineEventHandler(async (event) => {
   const userId = event.context.user?.id
   if (!userId) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
@@ -36,9 +36,9 @@ const match = async (userId, event) => {
   const { matchThreshold } = useRuntimeConfig().dontTrustVerify
   const distances = []
   for (const face of faces) {
-    const vector = await descriptorFromFace(face)
-    if (!vector) return { match: false, reason: 'no-face' }
-    distances.push(euclideanDistance(record.vector, vector))
+    const vectors = await descriptorsFromFace(face)
+    if (!vectors.length) return { match: false, reason: 'no-face' }
+    for (const vector of vectors) distances.push(euclideanDistance(record.vector, vector))
   }
 
   return { match: distances.every(d => d < matchThreshold), distances }

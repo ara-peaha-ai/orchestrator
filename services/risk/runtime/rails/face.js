@@ -6,6 +6,8 @@ const MAX_SIDE = 512 // dont-trust-verify rejects bigger images
 
 // input: { images: ['instagram-03.jpg', ...] }, the 3-4 the operator picked.
 // The subject must have completed the dont-trust-verify flow with user id = profile id (reference vector).
+// Each image goes whole: /match requires every face found in it to match, so a group photo fails.
+// ponytail: images are downscaled to 512 px, very small background faces may go undetected
 export default async ({ profile, input }) => {
   const { dontTrustVerifyUrl: url, dontTrustVerifySecret: secret } = useRuntimeConfig().risk
   if (!url || !secret) return { status: 'skipped', reason: 'dont-trust-verify not configured' }
@@ -29,7 +31,7 @@ export default async ({ profile, input }) => {
       body: { faces: [{ width: info.width, height: info.height, rgb: data.toString('base64') }] }
     })
     if (res.match) matches++
-    distances.push(res.distances?.[0] ?? null)
+    distances.push(res.distances || [])
   }
   return { status: 'ok', signals: { checked: names.length, matches }, distances }
 }

@@ -13,14 +13,15 @@ export const getProfile = async (id) => {
 
 export const saveRail = async (profile, rail, result) => {
   profile.rails[rail] = { ...result, at: Date.now() }
-  profile.score = score(profile.rails, getUseCase(profile.useCase).rules)
+  const { rules, rails } = getUseCase(profile.useCase)
+  profile.score = score(profile.rails, rules, rails)
   await storage().setItem(`profile:${profile.id}`, profile)
   return profile
 }
 
 export const createProfile = async (useCase) => {
-  getUseCase(useCase) // validates the name
-  const profile = { id: crypto.randomUUID(), useCase, createdAt: Date.now(), rails: {}, score: { risk: 0, trust: 0, hits: [] } }
+  const { rules, rails } = getUseCase(useCase) // also validates the name
+  const profile = { id: crypto.randomUUID(), useCase, createdAt: Date.now(), rails: {}, score: score({}, rules, rails) }
   await storage().setItem(`profile:${profile.id}`, profile)
   return profile
 }

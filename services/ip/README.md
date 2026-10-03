@@ -111,11 +111,15 @@ Example shape:
 
 | Cloudflare | IPinfo | `deduction` | `vpn` |
 |---|---|---|---|
-| X | X (or no IPinfo key) | `consistent` | `false` |
+| X | X | `consistent` | `false` |
+| X | missing (no IPinfo key, or lookup failed) | `no-db` | `false` |
 | US / GB / FR | a Proton Smart Routing country (PY, UY, EC, ...) | `proton-smart-routing` | `true` |
 | X | Y | `vpn` | `true` |
 | `T1` | any | `tor` | `true` |
 | missing | X | `no-cloudflare` | `false` |
+| missing | missing | `unknown` | `false` |
+
+AR, BO, BR, CL, CO, MX and PE are mixed Proton locations (physical or routed), so `proton-smart-routing` there is a weaker hint. `countryCloudflare`, `countryDb`, `asn` and `asName` are only set with an IPinfo key, and nothing runs when both `country` and `currency` are off.
 
 `pnpm check` runs the deduction checks.
 
