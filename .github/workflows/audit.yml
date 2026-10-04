@@ -14,6 +14,11 @@ permissions:
   contents: read
   issues: write
 
+# A manual run overlapping the daily one could open two issues for the same epoch
+concurrency:
+  group: audit
+  cancel-in-progress: false
+
 env:
   SHIP_SAFE: ship-safe@10.1.0
   CLAUDE_CODE: '@anthropic-ai/claude-code@2.1.289'
@@ -52,8 +57,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-      # Report only: findings go in the issue, never fail the run
-      - run: npx -y "$SHIP_SAFE" ci . --fail-on none > "$RUNNER_TEMP/ship-safe.txt" 2>&1 || true
+      # Report only: findings never fail the run, a broken scan does (else its issue would close the epoch)
+      - run: set -o pipefail; npx -y "$SHIP_SAFE" ci . --fail-on none 2>&1 | tee "$RUNNER_TEMP/ship-safe.txt"
         env:
           NO_COLOR: '1'
       - run: npm i -g "$CLAUDE_CODE"

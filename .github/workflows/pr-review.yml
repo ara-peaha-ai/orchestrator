@@ -92,6 +92,6 @@ jobs:
       - run: |
           jq -n --rawfile body review.md '{body: $body}' | curl -fsS -X POST -H "Authorization: token $GITHUB_TOKEN" -H 'Content-Type: application/json' \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/$PR/comments" -d @- > /dev/null
-          grep -oE 'VERDICT: (pass|fail)' review.md | tail -n 1 | grep -qx 'VERDICT: pass'
+          tail -n 1 review.md | grep -qx 'VERDICT: pass'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ship-safe-ignore: GitHub's own token sent to GitHub's own API
