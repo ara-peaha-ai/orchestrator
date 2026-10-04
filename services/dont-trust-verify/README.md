@@ -65,6 +65,7 @@ In a built standalone server the env prefix is `NUXT_` (set in `nitro.config.js`
 | `NUXT_DONT_TRUST_VERIFY_MIN_AGE` | no | `18` | Minimum age |
 | `NUXT_DONT_TRUST_VERIFY_MATCH_THRESHOLD` | no | `0.6` | Max Euclidean distance for a face match |
 | `NUXT_DONT_TRUST_VERIFY_PROXY_SECRET` | standalone | none | Shared secret to trust `x-user-id` |
+| `NUXT_DONT_TRUST_VERIFY_CHAINALYSIS_API_KEY` | for `/sanctions` | none | Chainalysis free sanctions API key; never sent to the client |
 
 ## Routes
 
@@ -74,6 +75,7 @@ In a built standalone server the env prefix is `NUXT_` (set in `nitro.config.js`
 | `POST /api/dont-trust-verify/challenge` | New single-use code for the current user |
 | `POST /api/dont-trust-verify/register` | `{ code, ageVerified, face }`: validate the challenge, store the server-computed vector |
 | `POST /api/dont-trust-verify/match` | `{ faces: [face] }`: compare every face with the stored reference |
+| `POST /api/dont-trust-verify/sanctions` | `{ address }`: Chainalysis sanctions screening, `{ address, sanctioned, identifications }` |
 
 ## Threat model
 

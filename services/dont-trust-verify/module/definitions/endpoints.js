@@ -3,5 +3,6 @@ export const endpointDefs = [
   { method: 'POST', route: 'challenge', file: 'api/dont-trust-verify/challenge.post.js' },
   { method: 'POST', route: 'register', file: 'api/dont-trust-verify/register.post.js' },
   { method: 'POST', route: 'match', file: 'api/dont-trust-verify/match.post.js' },
-  { method: 'DELETE', route: 'vector', file: 'api/dont-trust-verify/vector.delete.js' }
+  { method: 'DELETE', route: 'vector', file: 'api/dont-trust-verify/vector.delete.js' },
+  { method: 'POST', route: 'sanctions', file: 'api/dont-trust-verify/sanctions.post.js' }
 ]
