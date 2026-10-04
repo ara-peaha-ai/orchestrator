@@ -1,11 +1,13 @@
-# Monthly repo audit: ship-safe full scan + ponytail audit (over-engineering) + ponytail debt ledger.
-# Opens one issue with the report, applies nothing. Same file runs on Gitea Actions.
+# Repo audit every 4032 Bitcoin blocks (2 difficulty epochs, ~28 days): ship-safe full scan + ponytail audit
+# (over-engineering) + ponytail debt ledger. Opens one issue with the report, applies nothing. Same file runs on Gitea Actions.
+# Actions cannot trigger on a block, so a daily check runs the audit once per epoch; the issue title is the state.
+# Block height from MEMPOOL_URL (repo/org variable, any Esplora-compatible API); point it at our own node on the VPS.
 # Needs secret CLAUDE_CODE_OAUTH_TOKEN (subscription OAuth, from `claude setup-token`), no paid API key.
-name: monthly-audit
+name: audit
 
 on:
   schedule:
-    - cron: '0 6 1 * *'
+    - cron: '17 6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,9 +17,35 @@ permissions:
 env:
   SHIP_SAFE: ship-safe@10.1.0
   CLAUDE_CODE: '@anthropic-ai/claude-code@2.1.289'
+  MEMPOOL_URL: ${{ vars.MEMPOOL_URL || 'https://mempool.space/api' }}
+  EPOCH_BLOCKS: 4032
 
 jobs:
+  epoch:
+    runs-on: ubuntu-latest
+    outputs:
+      due: ${{ steps.check.outputs.due }}
+      block: ${{ steps.check.outputs.block }}
+    steps:
+      # ponytail: scans the latest 100 issues only, enough while fewer than 100 issues open per epoch
+      - id: check
+        run: |
+          set -euo pipefail
+          h=$(curl -fsS "$MEMPOOL_URL/blocks/tip/height")
+          [[ "$h" =~ ^[0-9]+$ ]] || { echo "bad block height: $h"; exit 1; }
+          block=$(( h / EPOCH_BLOCKS * EPOCH_BLOCKS ))
+          title="Audit at block $block"
+          exists=$(curl -fsS -H "Authorization: token $GITHUB_TOKEN" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues?state=all&per_page=100" | jq --arg t "$title" 'any(.[]; .title == $t)')
+          [[ "$exists" =~ ^(true|false)$ ]] || { echo "cannot read issues"; exit 1; }
+          due=$([ "$exists" = false ] || [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && echo true || echo false)
+          echo "height $h, epoch block $block, already done: $exists, due: $due"
+          { echo "due=$due"; echo "block=$block"; } >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ship-safe-ignore: GitHub's own token sent to GitHub's own API
+
   audit:
+    needs: epoch
+    if: needs.epoch.outputs.due == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -48,7 +76,7 @@ jobs:
       # GitHub caps an issue body at 65536 characters
       - run: |
           { head -c 30000 audit.md; echo; echo '## Security (ship-safe)'; echo; echo '<details><summary>Output</summary>'; echo; echo '```'; tail -c 30000 "$RUNNER_TEMP/ship-safe.txt"; echo '```'; echo '</details>'; } > body.md
-          jq -n --arg title "Monthly audit $(date -u +%Y-%m)" --rawfile body body.md '{title: $title, body: $body}' | curl -fsS -X POST \
+          jq -n --arg title "Audit at block ${{ needs.epoch.outputs.block }}" --rawfile body body.md '{title: $title, body: $body}' | curl -fsS -X POST \
             -H "Authorization: token $GITHUB_TOKEN" -H 'Content-Type: application/json' "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues" -d @- > /dev/null
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ship-safe-ignore: GitHub's own token sent to GitHub's own API
