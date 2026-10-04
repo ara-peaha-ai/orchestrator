@@ -13,7 +13,8 @@ export default defineNitroConfig({
       prefix,
       minAge: Number(process.env.NUXT_DONT_TRUST_VERIFY_MIN_AGE) || 18,
       matchThreshold: Number(process.env.NUXT_DONT_TRUST_VERIFY_MATCH_THRESHOLD) || 0.6,
-      proxySecret: process.env.NUXT_DONT_TRUST_VERIFY_PROXY_SECRET
+      proxySecret: process.env.NUXT_DONT_TRUST_VERIFY_PROXY_SECRET,
+      chainalysisApiKey: process.env.NUXT_DONT_TRUST_VERIFY_CHAINALYSIS_API_KEY
     }
   },
 

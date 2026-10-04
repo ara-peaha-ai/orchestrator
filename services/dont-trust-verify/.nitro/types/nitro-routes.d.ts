@@ -16,6 +16,12 @@ declare module "nitropack/types" {
     '/api/dont-trust-verify/match': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../runtime/handlers/api/dont-trust-verify/match.post').default>>>>
     }
+    '/api/dont-trust-verify/vector': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../runtime/handlers/api/dont-trust-verify/vector.delete').default>>>>
+    }
+    '/api/dont-trust-verify/sanctions': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../runtime/handlers/api/dont-trust-verify/sanctions.post').default>>>>
+    }
   }
 }
 export {}
