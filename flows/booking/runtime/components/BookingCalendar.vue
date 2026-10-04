@@ -6,7 +6,7 @@ const props = defineProps({
   customPrimary: String
 })
 
-const selectedDate = shallowRef(new CalendarDate(2026, 3, 22))
+const selectedDate = defineModel({ default: () => new CalendarDate(2026, 3, 22) })
 
 const { isDark, themeStyles } = useCustomTheme({
   mode: () => props.customMode,
