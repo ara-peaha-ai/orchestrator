@@ -23,7 +23,7 @@ const call = async (step, url, opts) => {
 
 const openTrade = async () => {
   loading.value = true
-  result.value = failure.value = null
+  result.value = failure.value = robotWarning.value = null
   try {
     const { authorization } = await useRobot()
     const headers = { 'X-Robosats-Authorization': authorization }
