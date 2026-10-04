@@ -35,7 +35,127 @@ All the integration are based on public avaialble API or MCP meant to be publicc
 **PAY** orchestrator repo for PE'AHA ecosystem. 
 
 Most of the repos are in dual mode as a module to import in a Nuxt project or standalone as a server.
-  
+
+## PAY architecture
+
+Open-source, modular, and agnostic-by-design payment infrastructure for businesses and users that need practical multi-rail payment flows, self-custodial settlement, and more flexible cross-border money movement. It is built around **inbound rails**, **multi-rail offramps**, and self-custodial settlement, especially where traditional payment access is fragmented, limited, or overly dependent on a single provider.
+
+PAY uses [BTCPay Server](https://github.com/btcpayserver/btcpayserver) as the backend and an [Aqua Wallet](https://github.com/AquaWallet/aqua-wallet) fork as the default settlement wallet.
+
+[BTCPay Server](https://github.com/btcpayserver/btcpayserver) was chosen because it is a battle-tested, widely adopted, and community-maintained API and GUI backend with some built-in rails. We also actively contribute to its [core and plugin ecosystem](https://github.com/search?q=involves%3Alearntheropes+%28org%3Abtcpayserver+OR+org%3Abtcpayserver-tether+OR+org%3Amempool%29&type=issues).
+
+[Aqua Wallet](https://github.com/AquaWallet/aqua-wallet) was chosen because it already supports settlement in **BTC on-chain and multiple stablecoins (USD and BRL for now)** by default, and can be integrated from BTCPay Server through the Shamrock protocol with a QR-based connection flow.
+
+Where direct local cashout is not yet native, PAY provides practical guidance around compatible external wallets, cards, and off-ramp tools to improve real usability in Latin America and other supported regions. For instance, across all currently planned settlement chains, we already consider wallets and services such as [Belo](https://simple.belo.app/app/referral?referralCode=GIOVANNIL), [Revolut](https://revolut.com/referral/?referral-code=giovanni_learntheropes), and [Offramp](https://app.offramp.xyz/login?referralCode=njmlxf), including card and Google Pay / Apple Pay compatible paths, while more privacy-friendly card and Google Pay options may later be added through planned FixedFloat API work or collaboration with the issuer.
+
+If an inbound rail does not already settle into an asset supported by the Aqua wallet fork, PAY aims to convert it further into the supported asset that is cheapest and most functional for that case.
+
+```mermaid
+flowchart LR
+
+subgraph walletWrap["/wallet (MIT)"]
+  walletPlatform["Aqua fork (MIT)<br/>iOS & Android"]
+  seedMono["seed phrase"]
+  seedMarket["seed phrase"]
+  seedTeam["seed phrase / xpub"]
+end
+
+mono["/orchestrator (MIT)"]
+monoBtcpay["BTCPay Server (MIT)"]
+
+subgraph docker["Docker"]
+  marketplace["/marketplace<br/>(closed-source)<br/><br/>Rails:<br/>/banxa (MIT)<br/><br/>Services:<br/>/kyc (MIT)<br/>/compliance (MIT)"]
+  marketBtcpay["BTCPay Server (MIT)"]
+end
+
+team["/team"]
+otherWallet["/wallet (MIT)"]
+builtMarket["built on"]
+builtTeam["built on"]
+
+dashboard["/dashboard (MIT)"]
+
+seedMono --> mono
+seedMarket --> marketplace
+seedTeam -.-> team
+otherWallet --> marketplace
+
+mono --> monoBtcpay
+marketplace --> marketBtcpay
+dashboard --> otherWallet
+
+marketplace -.-> builtMarket
+builtMarket -.-> mono
+
+team -.-> builtTeam
+builtTeam -.-> mono
+
+style team stroke-dasharray: 6 6
+style builtMarket fill:transparent,stroke:transparent,color:#999
+style builtTeam fill:transparent,stroke:transparent,color:#999
+style walletPlatform fill:transparent,stroke:transparent,color:#999
+```
+
+> Closed-source repo code is only available to team members and not to external collaborators.  
+> Some modules that only work with the closed-source repo may be open-sourced at a later stage for integration into third-party external and unrelated projects.  
+> Because it is a closed-source repo, it requires enhanced verification for the marketplace admin and for users involved in high-value transactions.  
+> It is also supposed to generate enough income to maintain all the MIT repos long-term.  
+
+### Inbound multi-rails
+
+| Rail | Status | Currency | Payment Methods | Settlement | Fee | Verification | Privacy |
+|------|--------|----------|-----------------|------------|-----|--------------| ------- |
+| BTC | Implemented | SATS | On-chain & Lightning | Bitcoin On-chain | None | None | Total |
+| USDT | Implemented | USD | Liquid & Polygon | USDT Liquid & Polygon | None | None | Total |
+| [Peach](rails/peach) *(p2p-api-integration)* | testing | Global | Any | Bitcoin On-chain | High | None | Total |
+| [RoboSats](rails/robosats) *(p2p-api-integration)* | testing | Global | Any | Bitcoin On-chain | High | None | Total |
+| Mostro *(p2p-api-integration)* | evaluating | Global | Any | Bitcoin On-chain | High | None | Total |
+| Guardarian *(cex-api-integration)* | planned | USD, EUR, GBP, CAD, AUD, JPY, TRY, PLN, SEK | Credit/Debit Cards & Google/Apple Pay | Bitcoin On-chain | Medium | None or Standard | Possible (with RUC structure) |
+| Paygate *(cex-api-integration)* | planned | Global | Credit/Debit Cards | USDT Polygon | Medium | none | Total |
+| DePix *(cex-api-integration)* | planned | BRL | Pix | BRL on Liquid | Low | None | Total |
+| Kamipay *(cex-api-integration)* | planned | BRL | Pix | USDT Polygon | Low | Standard | None |
+| MtPelerin *(cex-api-integration)* | planned | EUR & CHF | SEPA | Bitcoin On-chain OR USDT Polygon | Low | Enlached | Possible (with RUC structure) |
+| Bitzed *(cex-api-integration)* | planned | ZMW | Mobile | Bitcoin On-chain | Low | None | Total |
+| Matbea *(cex+p2p-api-integration)* | planned | RUB | Yandex Pay, Sberbank, Tinkoff, YooMoney, SBP P2P, Mobile phone | Bitcoin On-chain | Low | None | Total |
+| MoonPay ACH USD *(cex-api-integration)* | designing | USD | ACH | TBD | TBD | Standard | None |
+
+### Multi-rail offramp
+
+| Cashout | Status | Currency | Payment Methods | Verification |
+|---------|--------|----------|-----------------|--------------|
+| Freedomia Card | under discussion with the provider | USD limited settlements | card / Google Pay | None |
+| todo | ... | ... | ... | ... |
+
+Referral code for two months of the [Freedomia](https://www.freedomia.io/a/paguaitu) free plan.
+
+### Planned services
+
+- **invoice**: programmatic electronic invoice generation upon payment settlement, based on the [Invopop](https://www.invopop.com/) solution, releasing the Paraguayan SIFEN integration using the available [TIPS SA](https://github.com/TIPS-SA) modules, with multiple LATAM countries supported. Disabled by default.
+
+### Planned repositories
+
+- **/wallet**: an MIT fork of the Aqua Flutter Wallet, with an embedded Nuxt app to manage /orchestrator settings and connect to BTCPay via the Shamrock protocol.
+- **/dashboard**: Nuxt-based MIT app intended to handle payment flows through an embedded interface in the /wallet Flutter app.
+- **/marketplace**: closed-source repository for multi-user marketplace integrations of this repo. Multi-user management by the marketplace admin, while funds always remain under the control of the marketplace merchant user. Modules under evaluation:
+  - Rails: [Banxa virtual accounts](https://banxa.com/features/fiat/virtual-accounts/), ACH, SEPA, Faster Payments, and PayID rails, all to be confirmed due to poor documentation, with merchant-unique details.
+  - Services: merchant KYC verification; financial operations reporting for Paraguayan clients as required by the Resolución DNIT 47/2026 compliance rules; financial operations reporting for EU clients as required by the MiCA regulation.
+
+### Use cases
+
+PAY is aimed at cases where standard payment stacks are too limited, too fragile, or too dependent on a single provider:
+
+- cross-border businesses
+- businesses that need multi-rail inbound payments
+- merchants that want crypto settlement with broader payment reach
+- users in emerging markets
+- high-risk but lawful businesses
+- builders that want modular, self-hostable payment infrastructure
+- Bitcoiners
+
+It is not meant to be presented as a universal fit for every merchant.
+
+Project inspired by [**BitPagos**](https://web.archive.org/web/20141225131358/https://www.bitpagos.com/es/) in 2014, now prioritized as an open-source response to the recent release of a KYC-mandatory, limited-availability, fiat-settled [Stripe Payments BTCPay Plugin](https://plugin-builder.btcpayserver.org/public/plugins/stripe-payments).
+
 ## What exists today
 
 ### PAY
