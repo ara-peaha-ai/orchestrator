@@ -20,8 +20,8 @@ env:
   CLAUDE_CODE: '@anthropic-ai/claude-code@2.1.289'
   PR: ${{ github.event.pull_request.number }}
   BASE_REF: ${{ github.base_ref }}
-  # Fork PRs get a read-only token: they are scanned, but nothing is posted
-  SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+  # Fork and Dependabot PRs get a read-only token: they are scanned, but nothing is posted
+  CAN_POST: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
 
 jobs:
   ship-safe:
@@ -44,11 +44,11 @@ jobs:
         run: set -o pipefail; npx -y "$SHIP_SAFE" ci . --base-report "$RUNNER_TEMP/base.json" --fail-on high --sarif results.sarif 2>&1 | tee "$RUNNER_TEMP/scan.txt"
         env:
           NO_COLOR: '1'
-      - if: always() && env.SAME_REPO == 'true' && github.server_url == 'https://github.com' && hashFiles('results.sarif') != ''
+      - if: always() && env.CAN_POST == 'true' && github.server_url == 'https://github.com' && hashFiles('results.sarif') != ''
         uses: github/codeql-action/upload-sarif@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3.38.2
         with:
           sarif_file: results.sarif
-      - if: always() && env.SAME_REPO == 'true' && steps.scan.outcome != 'skipped'
+      - if: always() && env.CAN_POST == 'true' && steps.scan.outcome != 'skipped'
         run: |
           { echo "## ship-safe (${{ steps.scan.outcome }})"; echo; echo '<details><summary>Output</summary>'; echo; echo '```'; tail -c 60000 "$RUNNER_TEMP/scan.txt"; echo '```'; echo '</details>'; } > comment.md
           jq -n --rawfile body comment.md '{body: $body}' | curl -fsS -X POST -H "Authorization: token $GITHUB_TOKEN" -H 'Content-Type: application/json' \
