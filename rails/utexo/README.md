@@ -19,13 +19,13 @@ Each order gets its own escrow: an [OpenZeppelin clone with immutable args](http
 |---|---|
 | `usdt` | token on this chain |
 | `mint` | UTEXO bridge (`fundsIn` on Arbitrum) or entrypoint contract on this chain |
-| `builder` | address of a secp256k1 key derived in the builder's wallet, used only to sign |
+| `builder` | address of a secp256k1 key derived in the builder's wallet for this sale contract only, used only to sign |
 | `feeTo` | fee recipient |
 | `fee` | total fee in token base units |
 
 ### Flow
 
-1. **Issue (off-chain, no gas):** the orchestrator computes the escrow address with `predictEscrow()`. The wallet recomputes it from the same rules and must confirm it before the request reaches the buyer. This check is what stops a compromised server from swapping in its own key.
+1. **Issue (off-chain, no gas), at sale contract signing:** the builder's wallet derives a fresh key for this contract and sends its address (`builder`). The orchestrator computes the escrow address with `predictEscrow()`. The wallet recomputes it from the same rules and must confirm it before the request reaches the buyer. This check is what stops a compromised server from swapping in its own key.
 2. **Pay:** the buyer sends USDT to the address. The contract does not exist yet. The address is registered in BTCPay (USDt plugin) for tracking and webhooks.
 3. **Fee:** anyone can call `collectFee()` once the contract is deployed. It sends `min(balance, fee - feePaid)` to `feeTo`.
 4. **Settle:** the builder taps "cash out". The orchestrator calls `POST /mint/op-id` (operator key) and sends the resulting calldata to the wallet. The wallet signs `settleTypedData()` (EIP-712) and returns the signature. The orchestrator then relays:
