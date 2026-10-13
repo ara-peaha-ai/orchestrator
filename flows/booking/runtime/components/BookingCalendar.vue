@@ -7,7 +7,8 @@ const props = defineProps({
 })
 
 const todayDate = today(getLocalTimeZone())
-const selectedDate = defineModel({ default: () => todayDate })
+// defineModel is hoisted out of setup: its default cannot use todayDate, only imports
+const selectedDate = defineModel({ default: () => today(getLocalTimeZone()) })
 
 const { isDark, themeStyles } = useCustomTheme({
   mode: () => props.customMode,

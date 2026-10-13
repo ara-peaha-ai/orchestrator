@@ -21,6 +21,7 @@ All the integration are based on public avaialble API or MCP meant to be publicc
 ```
 /
 ├── nuxt.config.js      root Nuxt app — loads all workspace modules
+├── .env.example        every service's variables, one file
 ├── app.vue
 ├── pages/
 ├── server/
@@ -104,6 +105,8 @@ The root Nuxt app (`nuxt.config.js`) lists workspace modules in the `modules` ar
 `flows/booking` requires `@nuxt/ui`. It must be present in `nuxt.config.js` before or alongside the booking module.
 
 ## Environment variables
+
+The root app embeds every service as a module (`nuxt.config.js`), so all keys live in one file: copy the root `.env.example` to `.env` and fill it in. A service deployed standalone reads the same names from its own environment (its folder's `.env` locally, the platform's secrets in production). `services/cors` is standalone only (Cloudflare Worker). The tables below cover the main services; `.env.example` lists every variable.
 
 ### `services/tor`
 
