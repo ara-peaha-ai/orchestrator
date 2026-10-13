@@ -14,15 +14,24 @@ importers:
       '@ara-peaha-ai/btcpay':
         specifier: workspace:*
         version: link:services/btcpay
+      '@ara-peaha-ai/dont-trust-verify':
+        specifier: workspace:*
+        version: link:services/dont-trust-verify
       '@ara-peaha-ai/ip':
         specifier: workspace:*
         version: link:services/ip
+      '@ara-peaha-ai/market':
+        specifier: workspace:*
+        version: link:services/market
       '@ara-peaha-ai/masspay':
         specifier: workspace:*
         version: link:rails/masspay
       '@ara-peaha-ai/peach':
         specifier: workspace:*
         version: link:rails/peach
+      '@ara-peaha-ai/risk':
+        specifier: workspace:*
+        version: link:services/risk
       '@ara-peaha-ai/robosats':
         specifier: workspace:*
         version: link:rails/robosats

@@ -23,6 +23,9 @@
     "@ara-peaha-ai/robosats": "workspace:*",
     "@ara-peaha-ai/btcpay": "workspace:*",
     "@ara-peaha-ai/tor": "workspace:*",
-    "@ara-peaha-ai/masspay": "workspace:*"
+    "@ara-peaha-ai/masspay": "workspace:*",
+    "@ara-peaha-ai/dont-trust-verify": "workspace:*",
+    "@ara-peaha-ai/market": "workspace:*",
+    "@ara-peaha-ai/risk": "workspace:*"
   }
 }
