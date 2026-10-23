@@ -12,6 +12,7 @@ Each rail is a dual-mode module: it can run as a **standalone Nitro server** or 
 | `@ara-peaha-ai/peach` | `/rails/peach` | `/api/rails/peach/*` | [Peach](https://peachbitcoin.com) P2P Bitcoin rail |
 | `@ara-peaha-ai/robosats` | `/rails/robosats` | `/api/rails/robosats/*` | [RoboSats](https://robosats.com) P2P Bitcoin rail — includes `@ara-peaha-ai/tor` automatically |
 | `@ara-peaha-ai/masspay` | `/rails/masspay` | `/api/rails/masspay/*` | [MassPay](https://www.masspay.io) wallet rail — sweeps incoming USDT/ACH funds to PYG via SIPAP |
+| `@ara-peaha-ai/utexo` | — | — | Non-custodial per-order USDT escrow: fee first, remainder only to the [UTEXO](https://utexo.com) Mint (RGB). Contracts + JS lib, no module yet |
 
 ## Adding a new rail
 
