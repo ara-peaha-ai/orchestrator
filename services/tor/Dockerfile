@@ -24,10 +24,8 @@ ENV UMAMI_HOST=${UMAMI_HOST}
 # Set environment variables for Tor and Robosats Coordinator
 ARG ROBOSATS_COORDINATOR_ONION_URL
 ENV ROBOSATS_COORDINATOR_ONION_URL=${ROBOSATS_COORDINATOR_ONION_URL}
-# vs code security complain about this
-# on Digital Ocean app I could not find any other way to expose it
-ARG TOR_PROXY_SECRET
-ENV TOR_PROXY_SECRET=${TOR_PROXY_SECRET}
+# NUXT_TOR_PROXY_SECRET is a runtime secret: pass it when the container starts
+# (docker run -e, or the platform's encrypted env vars), never as a build arg
 
 # Install all the app npm packages
 RUN npm install

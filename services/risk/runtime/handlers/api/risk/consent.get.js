@@ -1,7 +1,7 @@
 import { defineEventHandler, getRouterParam, setResponseHeader } from 'h3'
 import { getProfile } from '../../../utils/profiles.js'
 
-// ponytail: consent placeholder, nothing is recorded. GET only renders: link previews (Instagram DM)
+// ponytail: consent placeholder, nothing is recorded (upgrade: when consent must be stored for a regulator or partner). GET only renders: link previews (Instagram DM)
 // and the operator opening the link must not record their IP; the button POST does.
 export default defineEventHandler(async (event) => {
   const profile = await getProfile(getRouterParam(event, 'id'))

@@ -1,5 +1,6 @@
 import { btcpayRequest } from './btcpayRequest.js'
-import { getStoreId, assertMoney } from './getStoreId.js'
+import { getStoreId } from './getStoreId.js'
+import { assertMoney } from './assertMoney.js'
 
 // Plain function for server code (booking flow); HTTP callers go through invoices/create.post.js
 export const createInvoice = async ({ amount, currency, orderId, buyerEmail, redirectUrl, metadata }) => {

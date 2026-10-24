@@ -35,9 +35,6 @@ importers:
       '@ara-peaha-ai/robosats':
         specifier: workspace:*
         version: link:rails/robosats
-      '@ara-peaha-ai/template':
-        specifier: workspace:*
-        version: link:rails/template
       '@ara-peaha-ai/tor':
         specifier: workspace:*
         version: link:services/tor
