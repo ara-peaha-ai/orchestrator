@@ -21,6 +21,7 @@ All the integration are based on public avaialble API or MCP meant to be publicc
 ```
 /
 ├── nuxt.config.js      root Nuxt app — loads all workspace modules
+├── .env.example        every service's variables, one file
 ├── app.vue
 ├── pages/
 ├── server/
@@ -196,10 +197,10 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 
 | Package | Routes | Notes |
 |---------|--------|-------|
-| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default |
-| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
-| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default |
-| `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default |
+| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default, enabled in the root app |
+| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default, enabled in the root app |
+| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default, enabled in the root app |
+| `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default, enabled in the root app |
 
 ## Local development
 
@@ -220,6 +221,8 @@ The root Nuxt app (`nuxt.config.js`) lists workspace modules in the `modules` ar
 `flows/booking` requires `@nuxt/ui`. It must be present in `nuxt.config.js` before or alongside the booking module.
 
 ## Environment variables
+
+The root app embeds every service as a module (`nuxt.config.js`), so all keys live in one file: copy the root `.env.example` to `.env` and fill it in. A service deployed standalone reads the same names from its own environment (its folder's `.env` locally, the platform's secrets in production). `services/cors` is standalone only (Cloudflare Worker). The tables below cover the main services; `.env.example` lists every variable.
 
 ### `services/tor`
 

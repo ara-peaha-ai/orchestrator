@@ -26,15 +26,14 @@ export default defineNuxtModule({
     nuxt.options.runtimeConfig.ipDetection = {
       country: toBoolean(options.country),
       currency: toBoolean(options.currency),
-      cloudflareSecret: options.cloudflareSecret,
+      // registered even when empty, so NUXT_IP_DETECTION_CLOUDFLARE_SECRET applies at runtime
+      cloudflareSecret: options.cloudflareSecret ?? '',
       rateLimit: Number(options.rateLimit) || 100,
       limitPaths: Array.isArray(options.limitPaths) ? options.limitPaths : []
     }
 
-    // Top-level so the env var is the clean NUXT_IPINFO_API_KEY
-    if (options.ipinfoApiKey !== undefined) {
-      nuxt.options.runtimeConfig.ipinfoApiKey = options.ipinfoApiKey
-    }
+    // Top-level so the env var is the clean NUXT_IPINFO_API_KEY; registered even when empty so it applies
+    nuxt.options.runtimeConfig.ipinfoApiKey = options.ipinfoApiKey ?? nuxt.options.runtimeConfig.ipinfoApiKey ?? ''
 
     const resolver = createResolver(import.meta.url)
 
