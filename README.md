@@ -40,27 +40,24 @@ Most of the repos are in dual mode as a module to import in a Nuxt project or st
 
 Open-source, modular, and agnostic-by-design payment infrastructure for businesses and users that need practical multi-rail payment flows, self-custodial settlement, and more flexible cross-border money movement. It is built around **inbound rails**, **multi-rail offramps**, and self-custodial settlement, especially where traditional payment access is fragmented, limited, or overly dependent on a single provider.
 
-PAY uses [BTCPay Server](https://github.com/btcpayserver/btcpayserver) as the backend and an [Aqua Wallet](https://github.com/AquaWallet/aqua-wallet) fork as the default settlement wallet.
+PAY uses [BTCPay Server](https://github.com/btcpayserver/btcpayserver) as the backend and a self-custodial settlement wallet (`/wallet`, planned).
 
 [BTCPay Server](https://github.com/btcpayserver/btcpayserver) was chosen because it is a battle-tested, widely adopted, and community-maintained API and GUI backend with some built-in rails. We also actively contribute to its [core and plugin ecosystem](https://github.com/search?q=involves%3Alearntheropes+%28org%3Abtcpayserver+OR+org%3Abtcpayserver-tether+OR+org%3Amempool%29&type=issues).
 
-[Aqua Wallet](https://github.com/AquaWallet/aqua-wallet) was chosen because it already supports settlement in **BTC on-chain and multiple stablecoins (USD and BRL for now)** by default, and can be integrated from BTCPay Server through the Shamrock protocol with a QR-based connection flow.
-
 Where direct local cashout is not yet native, PAY provides practical guidance around compatible external wallets, cards, and off-ramp tools to improve real usability in Latin America and other supported regions. For instance, across all currently planned settlement chains, we already consider wallets and services such as [Belo](https://simple.belo.app/app/referral?referralCode=GIOVANNIL), [Revolut](https://revolut.com/referral/?referral-code=giovanni_learntheropes), and [Offramp](https://app.offramp.xyz/login?referralCode=njmlxf), including card and Google Pay / Apple Pay compatible paths, while more privacy-friendly card and Google Pay options may later be added through planned FixedFloat API work or collaboration with the issuer.
 
-If an inbound rail does not already settle into an asset supported by the Aqua wallet fork, PAY aims to convert it further into the supported asset that is cheapest and most functional for that case.
+If an inbound rail does not already settle into an asset supported by the settlement wallet, PAY aims to convert it further into the supported asset that is cheapest and most functional for that case.
 
 ```mermaid
 flowchart LR
 
 subgraph walletWrap["/wallet (MIT)"]
-  walletPlatform["Aqua fork (MIT)<br/>iOS & Android"]
   seedMono["seed phrase"]
   seedMarket["seed phrase"]
   seedTeam["seed phrase / xpub"]
 end
 
-mono["/orchestrator (MIT)"]
+mono["/pay (MIT)"]
 monoBtcpay["BTCPay Server (MIT)"]
 
 subgraph docker["Docker"]
@@ -93,7 +90,6 @@ builtTeam -.-> mono
 style team stroke-dasharray: 6 6
 style builtMarket fill:transparent,stroke:transparent,color:#999
 style builtTeam fill:transparent,stroke:transparent,color:#999
-style walletPlatform fill:transparent,stroke:transparent,color:#999
 ```
 
 > Closed-source repo code is only available to team members and not to external collaborators.  
@@ -116,7 +112,7 @@ style walletPlatform fill:transparent,stroke:transparent,color:#999
 | Kamipay *(cex-api-integration)* | planned | BRL | Pix | USDT Polygon | Low | Standard | None |
 | MtPelerin *(cex-api-integration)* | planned | EUR & CHF | SEPA | Bitcoin On-chain OR USDT Polygon | Low | Enlached | Possible (with RUC structure) |
 | Bitzed *(cex-api-integration)* | planned | ZMW | Mobile | Bitcoin On-chain | Low | None | Total |
-| Matbea *(cex+p2p-api-integration)* | planned | RUB | Yandex Pay, Sberbank, Tinkoff, YooMoney, SBP P2P, Mobile phone | Bitcoin On-chain | Low | None | Total |
+| Matbea *(cex+p2p-api-integration)* | planned | RUB | Yandex Pay, Tinkoff, YooMoney, SBP P2P, Mobile phone | Bitcoin On-chain | Low | None | Total |
 | MoonPay ACH USD *(cex-api-integration)* | designing | USD | ACH | TBD | TBD | Standard | None |
 
 ### Multi-rail offramp
@@ -134,8 +130,8 @@ Referral code for two months of the [Freedomia](https://www.freedomia.io/a/pagua
 
 ### Planned repositories
 
-- **/wallet**: an MIT fork of the Aqua Flutter Wallet, with an embedded Nuxt app to manage /orchestrator settings and connect to BTCPay via the Shamrock protocol.
-- **/dashboard**: Nuxt-based MIT app intended to handle payment flows through an embedded interface in the /wallet Flutter app.
+- **/wallet**: a self-custodial wallet based on WDK, with an embedded Nuxt app to manage /pay settings and connect to BTCPay.
+- **/dashboard**: Nuxt-based MIT app intended to handle payment flows through an embedded interface in the /wallet app.
 - **/marketplace**: closed-source repository for multi-user marketplace integrations of this repo. Multi-user management by the marketplace admin, while funds always remain under the control of the marketplace merchant user. Modules under evaluation:
   - Rails: [Banxa virtual accounts](https://banxa.com/features/fiat/virtual-accounts/), ACH, SEPA, Faster Payments, and PayID rails, all to be confirmed due to poor documentation, with merchant-unique details.
   - Services: merchant KYC verification; financial operations reporting for Paraguayan clients as required by the Resolución DNIT 47/2026 compliance rules; financial operations reporting for EU clients as required by the MiCA regulation.
