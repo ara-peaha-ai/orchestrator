@@ -22,8 +22,10 @@ const serialized = (id, fn) => {
 
 // Raw rail results only: classification is up to whoever reads them (operator or a private config).
 // Re-reads the latest record before merging, so two rails finishing together never drop each other.
-export const saveRail = (id, rail, result) => serialized(id, async () => {
+export const saveRail = (id, rail, result, { once = false } = {}) => serialized(id, async () => {
   const profile = await getProfile(id)
+  // once: the first stored result wins, checked inside the queue so concurrent writes cannot race it
+  if (once && profile.rails[rail]) return profile
   profile.rails[rail] = { ...result, at: Date.now() }
   await storage().setItem(`profile:${id}`, profile)
   return profile

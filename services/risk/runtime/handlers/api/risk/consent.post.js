@@ -7,7 +7,7 @@ import ip from '../../../rails/ip.js'
 export default defineEventHandler(async (event) => {
   const profile = await getProfile(getRouterParam(event, 'id'))
   // unauthenticated by design (the subject has no secret): only the first click is stored, never replaced
-  if (!profile.rails.ip) await saveRail(profile.id, 'ip', await ip({ event }))
+  if (!profile.rails.ip) await saveRail(profile.id, 'ip', await ip({ event }), { once: true })
   const next = getUseCase(profile.useCase).consentNext
   if (next) return sendRedirect(event, next, 303)
   setResponseHeader(event, 'content-type', 'text/html; charset=utf-8')
