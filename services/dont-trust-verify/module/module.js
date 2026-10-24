@@ -16,7 +16,8 @@ export default defineNuxtModule({
     prefix: '/api/dont-trust-verify',
     minAge: 18,
     matchThreshold: 0.6,
-    proxySecret: undefined
+    proxySecret: undefined,
+    chainalysisApiKey: undefined
   },
 
   setup(options, nuxt) {
@@ -29,7 +30,9 @@ export default defineNuxtModule({
       prefix,
       minAge: Number(options.minAge) || 18,
       matchThreshold: Number(options.matchThreshold) || 0.6,
-      proxySecret: options.proxySecret
+      proxySecret: options.proxySecret,
+      // '' keeps the key so NUXT_DONT_TRUST_VERIFY_CHAINALYSIS_API_KEY fills it at runtime
+      chainalysisApiKey: options.chainalysisApiKey || nuxt.options.runtimeConfig.dontTrustVerify?.chainalysisApiKey || ''
     }
     // Client needs the same values to run the local checks
     nuxt.options.runtimeConfig.public.dontTrustVerify = {

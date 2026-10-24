@@ -1,5 +1,5 @@
 {
-  "name": "@ara-peaha-ai/orchestrator",
+  "name": "@ara-peaha-ai/pay",
   "description": "Orchestrator payment repo. It assembles payment rails, business flows, and support services into a single Nuxt-based workspace.",
   "type": "module",
   "private": true,

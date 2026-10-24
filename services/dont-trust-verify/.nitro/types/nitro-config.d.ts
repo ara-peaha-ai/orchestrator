@@ -18,6 +18,8 @@ declare module "nitropack/types" {
       matchThreshold: number,
 
       proxySecret: string,
+
+      chainalysisApiKey: string,
    },
   }
 }

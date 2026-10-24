@@ -1,4 +1,4 @@
-# @ara-peaha-ai/orchestrator
+# @ara-peaha-ai/pay
 
 ## Stage
 
@@ -32,7 +32,7 @@ All the integration are based on public avaialble API or MCP meant to be publicc
 
 ## Description
 
-**PAY** orchestrator repo for PE'AHA ecosystem. 
+**PAY** repo for PE'AHA ecosystem. 
 
 Most of the repos are in dual mode as a module to import in a Nuxt project or standalone as a server.
 
