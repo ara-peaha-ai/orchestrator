@@ -81,10 +81,10 @@ Infrastructure modules that run as both a standalone Nitro app and an embeddable
 
 | Package | Routes | Notes |
 |---------|--------|-------|
-| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default |
-| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default |
-| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default |
-| `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default |
+| `@ara-peaha-ai/ip` (`services/ip`) | — | Rate limiting + IP geolocation (country, currency) + Cloudflare vs IPinfo deduction (VPN, Proton Smart Routing, Tor), disabled by default, enabled in the root app |
+| `@ara-peaha-ai/tor` (`services/tor`) | `/api/tor`, `/api/tor/**` | Tor reverse proxy, disabled by default, enabled in the root app |
+| `@ara-peaha-ai/market` (`services/market`) | `/api/market/**` | P2P offer aggregator (Bisq, RoboSats, Peach), disabled by default, enabled in the root app |
+| `@ara-peaha-ai/risk` (`services/risk`) | `/api/risk/**` | Consent-based risk and trust profiles: social, face match, AI-generated images, IP, BTC proof of funds. Node only, disabled by default, enabled in the root app |
 
 ## Local development
 

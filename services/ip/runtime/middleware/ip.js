@@ -80,9 +80,10 @@ export default defineEventHandler(async (event) => {
 
   const path = event.path || ''
 
-  // Rate limiting
-  const shouldLimit = limitPaths.length > 0
-    ? limitPaths.some(p => path.startsWith(p))
+  // Rate limiting; NUXT_IP_DETECTION_LIMIT_PATHS arrives as a comma-separated string
+  const paths = Array.isArray(limitPaths) ? limitPaths : String(limitPaths || '').split(',').map(p => p.trim()).filter(Boolean)
+  const shouldLimit = paths.length > 0
+    ? paths.some(p => path.startsWith(p))
     : isRateLimited(path)
 
   if (shouldLimit) {

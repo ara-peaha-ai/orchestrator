@@ -22,12 +22,11 @@ export default defineNuxtModule({
     const enabled = toBoolean(options.enabled)
     if (!enabled) return
 
-    if (options.torProxySecret !== undefined) {
-      nuxt.options.runtimeConfig.torProxySecret = options.torProxySecret
-    }
-    if (options.robosatsCoordinatorOnionUrl !== undefined) {
-      nuxt.options.runtimeConfig.robosatsCoordinatorOnionUrl = options.robosatsCoordinatorOnionUrl
-    }
+    // registered even when empty, so NUXT_TOR_PROXY_SECRET / NUXT_ROBOSATS_COORDINATOR_ONION_URL apply at runtime;
+    // an empty secret makes the tor-proxy route deny every call
+    nuxt.options.runtimeConfig.torProxySecret = options.torProxySecret ?? nuxt.options.runtimeConfig.torProxySecret ?? ''
+    nuxt.options.runtimeConfig.robosatsCoordinatorOnionUrl = options.robosatsCoordinatorOnionUrl ??
+      nuxt.options.runtimeConfig.robosatsCoordinatorOnionUrl ?? 'http://otmoonrndnrddqdlhu6b36heunmbyw3cgvadqo2oqeau3656wfv7fwad.onion'
 
     nuxt.options.runtimeConfig.torSocksUrl =
       options.torSocksUrl ?? nuxt.options.runtimeConfig.torSocksUrl ?? 'socks5h://127.0.0.1:9050'

@@ -14,9 +14,10 @@ export default defineNuxtConfig({
     '@ara-peaha-ai/risk'
   ],
 
-  // Every service runs inside this app, so one root .env holds all their keys (.env.example).
-  // Each one fails closed without its secret: tor and market deny every proxy call, risk answers nothing,
-  // dont-trust-verify answers 401 without a user and 503 on /sanctions without the Chainalysis key.
+  // Every service except cors runs inside this app, so one root .env holds their keys (.env.example).
+  // Without their secrets: the tor and market proxies deny every call, risk operator routes answer 401
+  // (the subject's consent page stays open by design), dont-trust-verify answers 401 without a user and
+  // 503 on /sanctions without the Chainalysis key. Market offer routes are public.
   ipDetection: {
     enabled: true,
     currency: true
