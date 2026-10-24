@@ -33,7 +33,7 @@ const cli = async (platform, handle, cookiesFile) => {
     .map(v => ({ url: v.thumbnail, date: v.timestamp ? new Date(v.timestamp * 1000).toISOString() : undefined }))
 }
 
-// ponytail: output shape not verified with a paid run, collects every image-like URL by key name
+// ponytail: output shape not verified with a paid run, collects every image-like URL by key name; upgrade: pin the keys after the first paid run
 // and takes the post date from a sibling key of the same object
 const IMAGE_KEY = /^(displayUrl|display_url|cover|originCover|thumbnail|thumbnailUrl)$/i
 const DATE_KEY = /^(timestamp|takenAtTimestamp|taken_at|createTime|createTimeISO)$/

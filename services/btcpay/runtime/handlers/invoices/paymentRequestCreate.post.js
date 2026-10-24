@@ -1,7 +1,8 @@
 import { defineEventHandler, readBody } from 'h3'
 import { requireServerSecret } from '../../lib/requireServerSecret.js'
 import { btcpayRequest } from '../../lib/btcpayRequest.js'
-import { getStoreId, assertMoney } from '../../lib/getStoreId.js'
+import { getStoreId } from '../../lib/getStoreId.js'
+import { assertMoney } from '../../lib/assertMoney.js'
 
 export default defineEventHandler(async (event) => {
   requireServerSecret(event)

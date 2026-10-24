@@ -10,6 +10,12 @@ import {
 import got from 'got'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 
+import { createHash, timingSafeEqual } from 'node:crypto'
+
+const digest = (value) => createHash('sha256').update(String(value)).digest()
+// constant-time compare; an unset secret never matches
+const sameSecret = (provided, expected) => Boolean(expected && provided) && timingSafeEqual(digest(provided), digest(expected))
+
 const HOP_BY_HOP = new Set([
   'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
   'te', 'trailer', 'transfer-encoding', 'upgrade'
@@ -59,7 +65,7 @@ export default defineEventHandler(async (event) => {
 
   const incomingHeaders = getRequestHeaders(event)
 
-  if (incomingHeaders['x-tor-proxy-secret'] !== torProxySecret) {
+  if (!sameSecret(incomingHeaders['x-tor-proxy-secret'], torProxySecret)) {
     setResponseStatus(event, 403)
     return { error: 'Forbidden' }
   }

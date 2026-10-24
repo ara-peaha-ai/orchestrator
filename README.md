@@ -179,7 +179,7 @@ Payment rail modules. Each injects pages, composables, and server handlers into 
 
 | Package | Page | API |
 |---------|------|-----|
-| `@ara-peaha-ai/template` (`rails/template`) | `/rails/template` | `/api/rails/template` |
+| `@ara-peaha-ai/template` (`rails/template`), reference to copy, not mounted in the app | `/rails/template` | `/api/rails/template` |
 | `@ara-peaha-ai/peach` (`rails/peach`) | `/rails/peach` | `/api/rails/peach/*` |
 | `@ara-peaha-ai/robosats` (`rails/robosats`) | `/rails/robosats` | `/api/rails/robosats/*` |
 

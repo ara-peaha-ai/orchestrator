@@ -27,20 +27,19 @@ export default defineNuxtModule({
 
     const resolver = createResolver(import.meta.url)
 
-    nuxt.options.runtimeConfig.masspayBaseUrl =
-      options.masspayBaseUrl ?? nuxt.options.runtimeConfig.masspayBaseUrl ?? 'https://api.masspay.io/v1.0.0'
-    nuxt.options.runtimeConfig.masspayApiKey =
-      options.masspayApiKey ?? nuxt.options.runtimeConfig.masspayApiKey ?? ''
-    nuxt.options.runtimeConfig.masspayWebhookSecret =
-      options.masspayWebhookSecret ?? nuxt.options.runtimeConfig.masspayWebhookSecret ?? ''
-    nuxt.options.runtimeConfig.masspayBeneficiaryUserToken =
-      options.masspayBeneficiaryUserToken ?? nuxt.options.runtimeConfig.masspayBeneficiaryUserToken ?? ''
-    nuxt.options.runtimeConfig.masspayDestinationToken =
-      options.masspayDestinationToken ?? nuxt.options.runtimeConfig.masspayDestinationToken ?? ''
-    nuxt.options.runtimeConfig.masspayAttrSetToken =
-      options.masspayAttrSetToken ?? nuxt.options.runtimeConfig.masspayAttrSetToken ?? ''
-    nuxt.options.runtimeConfig.masspaySourceCurrency =
-      options.masspaySourceCurrency ?? nuxt.options.runtimeConfig.masspaySourceCurrency ?? 'USD'
+    // module option, then runtime config (NUXT_* env), then default
+    const configDefaults = {
+      masspayBaseUrl: 'https://api.masspay.io/v1.0.0',
+      masspayApiKey: '',
+      masspayWebhookSecret: '',
+      masspayBeneficiaryUserToken: '',
+      masspayDestinationToken: '',
+      masspayAttrSetToken: '',
+      masspaySourceCurrency: 'USD'
+    }
+    for (const [key, fallback] of Object.entries(configDefaults)) {
+      nuxt.options.runtimeConfig[key] = options[key] ?? nuxt.options.runtimeConfig[key] ?? fallback
+    }
 
     // Server handlers
     const prefix = String(options.prefix || '/api/rails/masspay').replace(/\/+$/, '')
